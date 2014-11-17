@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>lcc.util.maven</groupId>
+    <artifactId>base-pom</artifactId>
+    <version>110912.1-SNAPSHOT</version>
+  </parent>
+  <groupId>net.euler</groupId>
+  <artifactId>euler</artifactId>
+  <name>euler</name>
+  <packaging>jar</packaging>
+  <version>140317.1-SNAPSHOT</version>
+
+  <dependencies>
+    <dependency>
+      <groupId>lcc.util</groupId>
+      <artifactId>util</artifactId>
+      <version>110912.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <!-- inherit version and scope from base pom -->
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <!-- inherit scope and version from base pom -->
+    </dependency>
+   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>lcc.util.maven</groupId>
+        <artifactId>maven-script-plugin</artifactId>
+        <version>091209.1-SNAPSHOT</version>
+        <configuration>
+          <heapSize>1g</heapSize>
+          <scripts>
+          </scripts>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>script</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
