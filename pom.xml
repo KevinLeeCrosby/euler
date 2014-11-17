@@ -16,11 +16,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>lcc.util</groupId>
-      <artifactId>util</artifactId>
-      <version>110912.1-SNAPSHOT</version>
-    </dependency>
-    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <!-- inherit version and scope from base pom -->

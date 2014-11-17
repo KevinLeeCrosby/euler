@@ -1,6 +1,6 @@
 package net.euler;
 
-import lcc.util.Lists;
+import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -70,7 +70,7 @@ public class Primes implements Iterable<Integer> {
   }
 
   public static void main(String[] args) {
-    for (int limit : Lists.of(10, 20, 30, 15)) {
+    for (int limit : Lists.newArrayList(10, 20, 30, 15)) {
       Primes primes = Primes.getInstance();
       int i = 0;
       for (Integer prime : primes) {
@@ -85,7 +85,7 @@ public class Primes implements Iterable<Integer> {
     Primes primes = Primes.getInstance();
     System.out.println("100th prime is " + primes.get(100));
 
-    for (int n : Lists.of(1003, 1009)) { // false, true
+    for (int n : Lists.newArrayList(1003, 1009)) { // false, true
       System.out.println("Is " + n + " prime? " + primes.isPrime(n));
     }
   }

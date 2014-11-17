@@ -1,8 +1,9 @@
 package net.euler;
 
-import lcc.util.Counter;
 
 import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by kevin on 11/13/14.
@@ -10,7 +11,7 @@ import java.math.BigInteger;
 public class P012p1 {
   private static int countDivisors(int t) {
     // Highly composite number formula
-    Counter<Integer> count = new Counter<>();
+    Map<Integer, Integer> count = new HashMap<>();
     BigPrimeIterator p = new BigPrimeIterator();
 
     BigInteger number = BigInteger.valueOf(t);
@@ -19,16 +20,20 @@ public class P012p1 {
       prime = p.next();
       while (number.mod(prime).equals(BigInteger.ZERO)) {
         number = number.divide(prime);
-        count.increment(prime.intValue());
+        int key = prime.intValue();
+        int value = count.get(key) == null ? 0 : count.get(key);
+        count.put(key, value + 1);
       }
     } while (prime.compareTo(number.divide(prime)) != 1); // i.e. if prime <= sqrt(number), p <= n/p
     if (!number.equals(BigInteger.ONE)) {
-      count.increment(number.intValue());
+      int key = number.intValue();
+      int value = count.get(key) == null ? 0 : count.get(key);
+      count.put(key, value + 1);
     }
 
     int product = 1;
-    for (int factor : count.getKeys()) {
-      product *= count.getIntCount(factor) + 1;
+    for (int factor : count.keySet()) {
+      product *= count.get(factor) + 1;
     }
     return product;
   }
