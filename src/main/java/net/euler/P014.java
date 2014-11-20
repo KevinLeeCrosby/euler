@@ -38,11 +38,11 @@ public class P014 {
       if (length > maxLength) {
         maxLength = length;
         bestSequence = sequence;
-        //System.out.println("Found starting number " + number + " with chain length of " + length);
+        System.out.println("Found starting number " + number + " with chain length of " + length);
       }
     }
 
-    System.out.println(Joiner.on(" ->\n").join(bestSequence));
+    //System.out.println(Joiner.on(" ->\n").join(bestSequence));
     System.out.println("Starting number " + bestSequence.get(0) + " produces the longest chain of length of " + maxLength);
   }
 }
