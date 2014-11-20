@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.math.BigInteger;
 
 /**
  * Created by kevin on 11/19/14.
@@ -15,14 +14,20 @@ public class P013 {
     InputStream is = P013.class.getResourceAsStream(file);
     BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
-    BigInteger total = BigInteger.ZERO;
+    // max 1s digit = 9*100=900
+    // max 10s digit = 9*100=900
+    // max 100s digit = 9*100+9
+    // max 1000s digit = 9*100+9*10+9
+    // nth digit summed affects up to (n + 2)nd digit
+    long total = 0L;
     String line;
     while ((line = br.readLine()) != null) {
-      total = total.add(new BigInteger(line));
+      long digits = Long.parseLong(line.substring(0, 12)); // add only 10 + 2 digit
+      total += digits;
     }
     br.close();
 
-    String firstTenDigits = total.toString().substring(0, 10);
+    String firstTenDigits = String.valueOf(total).substring(0, 10);
     System.out.println("The first ten digits of the sum of the given one-hundred 50-digit numbers is " + firstTenDigits);
   }
 }
