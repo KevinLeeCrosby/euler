@@ -22,7 +22,7 @@ public class P013 {
     long total = 0L;
     String line;
     while ((line = br.readLine()) != null) {
-      long digits = Long.parseLong(line.substring(0, 12)); // add only 10 + 2 digit
+      long digits = Long.parseLong(line.substring(0, 12)); // add only 10 + 2 digits
       total += digits;
     }
     br.close();
