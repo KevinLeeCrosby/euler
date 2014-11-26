@@ -19,21 +19,9 @@ public class P003 {
       number = BigInteger.valueOf(600851475143L);
     }
 
-    BigPrimeIterator p = new BigPrimeIterator();
-    List<BigInteger> factors = new ArrayList<>();
-
-    BigInteger prime;
+    BigIntegerPrimes bip = BigIntegerPrimes.getInstance();
+    List<BigInteger> factors = bip.factor(number);
     StringBuilder sb = new StringBuilder().append(number).append(" = ");
-    do {
-      prime = p.next();
-      while (number.mod(prime).equals(BigInteger.ZERO)) {
-        number = number.divide(prime);
-        factors.add(prime);
-      }
-    } while (prime.compareTo(number.divide(prime)) != 1); // i.e. if prime <= sqrt(number), p <= n/p
-    if (!number.equals(BigInteger.ONE)) {
-      factors.add(number);
-    }
     sb.append(Joiner.on(" * ").join(factors));
     System.out.println(sb);
   }

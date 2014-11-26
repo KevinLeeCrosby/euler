@@ -16,8 +16,8 @@ public class P007 {
       n = 10001;
     }
 
-    BigPrimeIterator p = new BigPrimeIterator();
-    BigInteger prime = Iterators.get(p, n - 1);
+    BigIntegerPrimes bip = BigIntegerPrimes.getInstance();
+    BigInteger prime = bip.get(n - 1); // index is 0 based
 
     System.out.println("Prime number #" + n + " is " + prime);
   }

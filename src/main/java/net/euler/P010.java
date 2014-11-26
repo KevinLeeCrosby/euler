@@ -14,13 +14,15 @@ public class P010 {
       n = BigInteger.valueOf(2000000);
     }
 
-    BigPrimeIterator p = new BigPrimeIterator();
+    BigIntegerPrimes bip = BigIntegerPrimes.getInstance();
     BigInteger sum = BigInteger.ZERO;
-    BigInteger prime = p.next();
-    while (prime.compareTo(n) == -1) { // i.e. prime less than n
+    int i = 0;
+    BigInteger prime = bip.get(i++);
+    while (prime.compareTo(n) == -1) { // i.e. prime < n
       sum = sum.add(prime);
-      prime = p.next();
+      prime = bip.get(i++);
     }
+
     System.out.println("The sum of all the primes below " + n + " is " + sum);
   }
 }

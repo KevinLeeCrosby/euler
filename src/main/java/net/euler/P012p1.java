@@ -3,36 +3,26 @@ package net.euler;
 
 import java.math.BigInteger;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * Created by kevin on 11/13/14.
  */
 public class P012p1 {
-  private static int countDivisors(int t) {
+  private static int countDivisors(long number) {
     // Highly composite number formula
-    Map<Integer, Integer> count = new HashMap<>();
-    BigPrimeIterator p = new BigPrimeIterator();
+    Map<Long, Integer> count = new HashMap<>();
 
-    BigInteger number = BigInteger.valueOf(t);
-    BigInteger prime;
-    do {
-      prime = p.next();
-      while (number.mod(prime).equals(BigInteger.ZERO)) {
-        number = number.divide(prime);
-        int key = prime.intValue();
-        int value = count.get(key) == null ? 0 : count.get(key);
-        count.put(key, value + 1);
-      }
-    } while (prime.compareTo(number.divide(prime)) != 1); // i.e. if prime <= sqrt(number), p <= n/p
-    if (!number.equals(BigInteger.ONE)) {
-      int key = number.intValue();
-      int value = count.get(key) == null ? 0 : count.get(key);
-      count.put(key, value + 1);
+    Primes bip = Primes.getInstance();
+    List<Long> factors = bip.factor(number);
+    for (Long factor : factors) {
+      int value = count.containsKey(factor) ? count.get(factor) : 0;
+      count.put(factor, value + 1);
     }
 
     int product = 1;
-    for (int factor : count.keySet()) {
+    for (Long factor : count.keySet()) {
       product *= count.get(factor) + 1;
     }
     return product;
@@ -47,7 +37,7 @@ public class P012p1 {
     }
 
     int n = 1;
-    int t = (n - 1) * n / 2; // count all previous up to this point
+    long t = (n - 1) * n / 2; // count all previous up to this point
     int noDivisors;
     do {
       t += n;

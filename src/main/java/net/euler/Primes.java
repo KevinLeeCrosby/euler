@@ -1,7 +1,9 @@
 package net.euler;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -9,12 +11,12 @@ import java.util.List;
 /**
  * Created by kevin on 11/14/14.
  */
-public class Primes implements Iterable<Integer> {
+public class Primes implements Iterable<Long> {
   private static Primes instance = null;
-  private List<Integer> primes = new ArrayList<>();
+  private List<Long> primes = new ArrayList<>();
 
   private Primes() {
-    primes.add(2);
+    primes.add(2L);
   }
 
   public static Primes getInstance() {
@@ -34,17 +36,17 @@ public class Primes implements Iterable<Integer> {
    * @return an Iterator.
    */
   @Override
-  public Iterator<Integer> iterator() {
+  public Iterator<Long> iterator() {
     return new PrimeIterator();
   }
 
-  public int get(int index) {
+  public long get(int index) {
     assert index >= 0 : "index must be...";
     if (index >= primes.size()) {
       synchronized (this) {
         if (index >= primes.size()) {
           for (int i = primes.size(); i <= index; i++) {
-            int nextOdd = (primes.get(primes.size() - 1) + 1) | 1; // get next odd (works for number 2)
+            long nextOdd = (primes.get(primes.size() - 1) + 1L) | 1L; // get next odd (works for number 2)
             while (!isPrime(nextOdd)) {
               nextOdd += 2;
             }
@@ -57,23 +59,57 @@ public class Primes implements Iterable<Integer> {
     return primes.get(index);
   }
 
-  public boolean isPrime(int number) {
+  public boolean isPrime(long number) {
     int i = 0;
-    int prime;
+    long prime;
     do {
-      prime = primes.get(i++);
+      prime = get(i++);
       if (number % prime == 0) {
         return false;
       }
-    } while (i < primes.size() && prime <= number / prime); // i.e. if prime <= sqrt(number)
+    } while (prime <= number / prime); // i.e. if prime <= sqrt(number), p <= n/p
     return true;
+  }
+
+  public List<Long> factor(long number) {
+    List<Long> factors = Lists.newArrayList();
+    int i = 0;
+    long prime;
+    do {
+      prime = get(i++);
+      while (number % prime == 0) {
+        number /= prime;
+        factors.add(prime);
+      }
+    } while (prime <= number / prime); // i.e. if prime <= sqrt(number), p <= n/p
+    if (number != 1L) {
+      factors.add(number);
+    }
+
+    return factors;
+  }
+
+  private class PrimeIterator implements Iterator<Long> {
+    private int index;
+
+    public PrimeIterator() {
+      index = 0;
+    }
+
+    public boolean hasNext() { return true; } // always has a next prime
+
+    public Long next() {
+      return Primes.this.get(index++);
+    }
+
+    public void remove() { throw new UnsupportedOperationException(); }
   }
 
   public static void main(String[] args) {
     for (int limit : Lists.newArrayList(10, 20, 30, 15)) {
       Primes primes = Primes.getInstance();
       int i = 0;
-      for (Integer prime : primes) {
+      for (long prime : primes) {
         System.out.print(prime + " ");
         if (i++ == limit) {
           System.out.println("");
@@ -88,21 +124,5 @@ public class Primes implements Iterable<Integer> {
     for (int n : Lists.newArrayList(1003, 1009)) { // false, true
       System.out.println("Is " + n + " prime? " + primes.isPrime(n));
     }
-  }
-
-  private class PrimeIterator implements Iterator<Integer> {
-    private int index;
-
-    public PrimeIterator() {
-      index = 0;
-    }
-
-    public boolean hasNext() { return true; } // always has a next prime
-
-    public Integer next() {
-      return Primes.this.get(index++);
-    }
-
-    public void remove() { throw new UnsupportedOperationException(); }
   }
 }

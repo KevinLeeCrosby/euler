@@ -16,7 +16,7 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
   private static final BigInteger TWO = BigInteger.valueOf(2L);
 
   private BigIntegerPrimes() {
-    primes.add(BigInteger.valueOf(2L));
+    primes.add(TWO);
   }
 
   public static BigIntegerPrimes getInstance() {
@@ -63,12 +63,46 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
     int i = 0;
     BigInteger prime;
     do {
-      prime = primes.get(i++);
+      prime = get(i++);
       if (number.mod(prime).equals(BigInteger.ZERO)) {
         return false;
       }
-    } while (i < primes.size() && prime.compareTo(number.divide(prime)) != 1); // i.e. if prime <= sqrt(number)
+    } while (prime.compareTo(number.divide(prime)) != 1); // i.e. if prime <= sqrt(number), p <= n/p
     return true;
+  }
+
+  public List<BigInteger> factor(BigInteger number) {
+    List<BigInteger> factors = Lists.newArrayList();
+    int i = 0;
+    BigInteger prime;
+    do {
+      prime = get(i++);
+      while (number.mod(prime).equals(BigInteger.ZERO)) {
+        number = number.divide(prime);
+        factors.add(prime);
+      }
+    } while (prime.compareTo(number.divide(prime)) != 1); // i.e. if prime <= sqrt(number), p <= n/p
+    if (!number.equals(BigInteger.ONE)) {
+      factors.add(number);
+    }
+
+    return factors;
+  }
+
+  private class BigIntegerPrimeIterator implements Iterator<BigInteger> {
+    private int index;
+
+    public BigIntegerPrimeIterator() {
+      index = 0;
+    }
+
+    public boolean hasNext() { return true; } // always has a next prime
+
+    public BigInteger next() {
+      return BigIntegerPrimes.this.get(index++);
+    }
+
+    public void remove() { throw new UnsupportedOperationException(); }
   }
 
   public static void main(String[] args) {
@@ -90,21 +124,5 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
     for (int n : Lists.newArrayList(1003, 1009)) { // false, true
       System.out.println("Is " + n + " prime? " + primes.isPrime(BigInteger.valueOf(n)));
     }
-  }
-
-  private class BigIntegerPrimeIterator implements Iterator<BigInteger> {
-    private int index;
-
-    public BigIntegerPrimeIterator() {
-      index = 0;
-    }
-
-    public boolean hasNext() { return true; } // always has a next prime
-
-    public BigInteger next() {
-      return BigIntegerPrimes.this.get(index++);
-    }
-
-    public void remove() { throw new UnsupportedOperationException(); }
   }
 }
