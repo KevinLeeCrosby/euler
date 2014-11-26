@@ -1,7 +1,6 @@
 package net.euler;
 
 
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,13 +16,15 @@ public class P012p1 {
     Primes bip = Primes.getInstance();
     List<Long> factors = bip.factor(number);
     for (Long factor : factors) {
-      int value = count.containsKey(factor) ? count.get(factor) : 0;
-      count.put(factor, value + 1);
+      int exponent = count.containsKey(factor) ? count.get(factor) : 0;
+      count.put(factor, exponent + 1);
     }
 
     int product = 1;
-    for (Long factor : count.keySet()) {
-      product *= count.get(factor) + 1;
+    for (Map.Entry<Long, Integer> entry : count.entrySet()) {
+      Long factor = entry.getKey();
+      int exponent = entry.getValue();
+      product *= exponent + 1;
     }
     return product;
   }
