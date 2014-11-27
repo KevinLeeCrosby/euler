@@ -2,7 +2,6 @@ package net.euler;
 
 import com.google.common.collect.Maps;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +12,7 @@ public class P021p1 {
   private static Map<Integer, Integer> d = Maps.newHashMap();
 
   private static void sumProperDivisors(int number) {
-    Map<Long, Integer> count = new HashMap<>();
+    Map<Long, Integer> count = Maps.newHashMap();
 
     Primes bip = Primes.getInstance();
     List<Long> factors = bip.factor(number);

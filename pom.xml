@@ -3,12 +3,6 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>lcc.util.maven</groupId>
-    <!--TODO:  figure out how to work on different operating systems-->
-    <artifactId>base-pom</artifactId>
-    <version>110912.1-SNAPSHOT</version>
-  </parent>
   <groupId>net.euler</groupId>
   <artifactId>euler</artifactId>
   <name>euler</name>
@@ -21,15 +15,10 @@
       <artifactId>commons-math3</artifactId>
       <version>3.3</version>
     </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <!-- inherit version and scope from base pom -->
-    </dependency>
-    <dependency>
+     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <!-- inherit scope and version from base pom -->
+      <version>18.0</version>
     </dependency>
   </dependencies>
 
