@@ -16,6 +16,7 @@ public class P023 {
       limit = 20161;
       // Every integer greater than 20161 can be written as the sum of two abundant numbers.
       // http://en.wikipedia.org/wiki/Abundant_number#Properties
+      // http://mathworld.wolfram.com/AbundantNumber.html
     }
 
     Primes p = Primes.getInstance();
