@@ -10,7 +10,7 @@ import java.io.InputStreamReader;
  */
 public class P013 {
   public static void main(String[] args) throws IOException {
-    String file = "/net/euler/problem13.txt";
+    String file = "/net/euler/p013.txt";
     InputStream is = P013.class.getResourceAsStream(file);
     BufferedReader br = new BufferedReader(new InputStreamReader(is));
 

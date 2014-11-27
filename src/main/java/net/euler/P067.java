@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class P067 {
   public static void main(String[] args) throws IOException {
-    String file = "/net/euler/problem67.txt";
+    String file = "/net/euler/p067.txt";
     InputStream is = P018.class.getResourceAsStream(file);
     List<List<Integer>> triangle = P018.loadTriangle(is);
 

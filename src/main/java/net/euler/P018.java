@@ -48,7 +48,7 @@ public class P018 {
 
 
   public static void main(String[] args) throws IOException {
-    String file = "/net/euler/problem18.txt";
+    String file = "/net/euler/p018.txt";
     InputStream is = P018.class.getResourceAsStream(file);
     List<List<Integer>> triangle = loadTriangle(is);
 
