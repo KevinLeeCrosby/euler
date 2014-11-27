@@ -1,11 +1,13 @@
 package net.euler;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by kevin on 11/25/14.
@@ -88,6 +90,32 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
 
     return factors;
   }
+
+  public BigInteger sumDivisors(BigInteger number) {
+    Map<BigInteger, Integer> count = Maps.newHashMap();
+
+    List<BigInteger> factors = factor(number);
+    for (BigInteger factor : factors) {
+      int exponent = count.containsKey(factor) ? count.get(factor) : 0;
+      count.put(factor, exponent + 1);
+    }
+
+    BigInteger sum = BigInteger.ONE;
+    for (Map.Entry<BigInteger, Integer> entry : count.entrySet()) {
+      BigInteger factor = entry.getKey();
+      int exponent = entry.getValue();
+      BigInteger numerator = factor.pow(exponent + 1).subtract(BigInteger.ONE);
+      BigInteger denominator = factor.subtract(BigInteger.ONE);
+      sum = sum.multiply(numerator).divide(denominator);
+    }
+
+    return sum;
+  }
+
+  public BigInteger aliquotSum(BigInteger number) { // a.k.a. sum proper divisors
+    return sumDivisors(number).subtract(number);  // make it proper
+  }
+
 
   private class BigIntegerPrimeIterator implements Iterator<BigInteger> {
     private int index;

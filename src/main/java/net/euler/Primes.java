@@ -2,11 +2,13 @@ package net.euler;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by kevin on 11/14/14.
@@ -87,6 +89,31 @@ public class Primes implements Iterable<Long> {
     }
 
     return factors;
+  }
+
+  public long sumDivisors(long number) {
+    Map<Long, Integer> count = Maps.newHashMap();
+
+    List<Long> factors = factor(number);
+    for (Long factor : factors) {
+      int exponent = count.containsKey(factor) ? count.get(factor) : 0;
+      count.put(factor, exponent + 1);
+    }
+
+    long sum = 1;
+    for (Map.Entry<Long, Integer> entry : count.entrySet()) {
+      Long factor = entry.getKey();
+      int exponent = entry.getValue();
+      long numerator = Double.valueOf(Math.pow(factor, exponent + 1) - 1).intValue();
+      long denominator = factor - 1;
+      sum *= numerator / denominator;
+    }
+
+    return sum;
+  }
+
+  public long aliquotSum(long number) { // a.k.a. sum proper divisors
+    return sumDivisors(number) - number;  // make it proper
   }
 
   private class PrimeIterator implements Iterator<Long> {
