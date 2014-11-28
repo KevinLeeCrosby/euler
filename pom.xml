@@ -9,13 +9,18 @@
   <packaging>jar</packaging>
   <version>141101.1-SNAPSHOT</version>
 
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-math3</artifactId>
       <version>3.3</version>
     </dependency>
-     <dependency>
+    <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>18.0</version>
@@ -24,23 +29,15 @@
 
   <build>
     <plugins>
-      <!--<plugin>-->
-      <!--<groupId>lcc.util.maven</groupId>-->
-      <!--<artifactId>maven-script-plugin</artifactId>-->
-      <!--<version>091209.1-SNAPSHOT</version>-->
-      <!--<configuration>-->
-      <!--<heapSize>1g</heapSize>-->
-      <!--<scripts>-->
-      <!--</scripts>-->
-      <!--</configuration>-->
-      <!--<executions>-->
-      <!--<execution>-->
-      <!--<goals>-->
-      <!--<goal>script</goal>-->
-      <!--</goals>-->
-      <!--</execution>-->
-      <!--</executions>-->
-      <!--</plugin>-->
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.2</version>
+        <configuration>
+          <heapSize>1g</heapSize>
+          <source>1.7</source>
+          <target>1.7</target>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 </project>
