@@ -112,7 +112,6 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
       BigInteger denominator = factor.subtract(BigInteger.ONE);
       sum = sum.multiply(numerator).divide(denominator);
     }
-
     return sum;
   }
 

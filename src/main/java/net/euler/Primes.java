@@ -110,7 +110,6 @@ public class Primes implements Iterable<Long> {
       long denominator = factor - 1;
       sum *= numerator / denominator;
     }
-
     return sum;
   }
 
