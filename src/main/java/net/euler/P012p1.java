@@ -9,25 +9,7 @@ import java.util.Map;
  * Created by kevin on 11/13/14.
  */
 public class P012p1 {
-  private static int countDivisors(long number) {
-    // Highly composite number formula
-    Map<Long, Integer> count = new HashMap<>();
-
-    Primes primes = Primes.getInstance();
-    List<Long> factors = primes.factor(number);
-    for (Long factor : factors) {
-      int exponent = count.containsKey(factor) ? count.get(factor) : 0;
-      count.put(factor, exponent + 1);
-    }
-
-    int product = 1;
-    for (Map.Entry<Long, Integer> entry : count.entrySet()) {
-      Long factor = entry.getKey();
-      int exponent = entry.getValue();
-      product *= exponent + 1;
-    }
-    return product;
-  }
+  private static final Primes P = Primes.getInstance();
 
   public static void main(String[] args) {
     int limit;
@@ -42,7 +24,7 @@ public class P012p1 {
     int noDivisors;
     do {
       t += n;
-      noDivisors = countDivisors(t);
+      noDivisors = P.countDivisors(t).intValue();
       System.out.println(n++ + "\t" + noDivisors + "\t" + t);
     } while (noDivisors <= limit);
 

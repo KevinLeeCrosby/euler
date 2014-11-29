@@ -2,11 +2,9 @@ package net.euler;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by kevin on 11/14/14.
@@ -92,19 +90,22 @@ public class Primes implements Iterable<Long> {
     return factors;
   }
 
-  public long sumDivisors(long number) {
-    Map<Long, Integer> count = Maps.newHashMap();
-
+  public Long countDivisors(long number) {
+    // Highly composite number formula
+    long count = 1;
     List<Long> factors = factor(number);
-    for (Long factor : factors) {
-      int exponent = count.containsKey(factor) ? count.get(factor) : 0;
-      count.put(factor, exponent + 1);
+    for (Long factor : Sets.newHashSet(factors)) {
+      int exponent = Collections.frequency(factors, factor);
+      count *= exponent + 1;
     }
+    return count;
+  }
 
+  public Long sumDivisors(long number) {
     long sum = 1;
-    for (Map.Entry<Long, Integer> entry : count.entrySet()) {
-      Long factor = entry.getKey();
-      int exponent = entry.getValue();
+    List<Long> factors = factor(number);
+    for (Long factor : Sets.newHashSet(factors)) {
+      int exponent = Collections.frequency(factors, factor);
       long numerator = Double.valueOf(Math.pow(factor, exponent + 1) - 1).intValue();
       long denominator = factor - 1;
       sum *= numerator / denominator;
@@ -113,7 +114,7 @@ public class Primes implements Iterable<Long> {
     return sum;
   }
 
-  public long aliquotSum(long number) { // a.k.a. sum proper divisors
+  public Long aliquotSum(long number) { // a.k.a. sum proper divisors
     return sumDivisors(number) - number;  // make it proper
   }
 
