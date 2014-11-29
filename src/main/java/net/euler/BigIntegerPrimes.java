@@ -62,6 +62,9 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
   }
 
   public boolean isPrime(BigInteger number) {
+    if (number.compareTo(primes.get(primes.size() - 1)) != 1) { // gt == 1, le != 1
+      return primes.contains(number);
+    }
     int i = 0;
     BigInteger prime;
     do {
@@ -124,13 +127,17 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
       index = 0;
     }
 
-    public boolean hasNext() { return true; } // always has a next prime
+    public boolean hasNext() {
+      return true;
+    } // always has a next prime
 
     public BigInteger next() {
       return BigIntegerPrimes.this.get(index++);
     }
 
-    public void remove() { throw new UnsupportedOperationException(); }
+    public void remove() {
+      throw new UnsupportedOperationException();
+    }
   }
 
   public static void main(String[] args) {

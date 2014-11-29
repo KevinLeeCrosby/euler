@@ -14,8 +14,8 @@ public class P021p1 {
   private static void sumProperDivisors(int number) {
     Map<Long, Integer> count = Maps.newHashMap();
 
-    Primes bip = Primes.getInstance();
-    List<Long> factors = bip.factor(number);
+    Primes primes = Primes.getInstance();
+    List<Long> factors = primes.factor(number);
     for (Long factor : factors) {
       int exponent = count.containsKey(factor) ? count.get(factor) : 0;
       count.put(factor, exponent + 1);

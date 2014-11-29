@@ -1,10 +1,8 @@
 package net.euler;
 
-import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -62,6 +60,9 @@ public class Primes implements Iterable<Long> {
   }
 
   public boolean isPrime(long number) {
+    if (number <= primes.get(primes.size() - 1)) {
+      return primes.contains(number);
+    }
     int i = 0;
     long prime;
     do {
@@ -123,13 +124,17 @@ public class Primes implements Iterable<Long> {
       index = 0;
     }
 
-    public boolean hasNext() { return true; } // always has a next prime
+    public boolean hasNext() {
+      return true;
+    } // always has a next prime
 
     public Long next() {
       return Primes.this.get(index++);
     }
 
-    public void remove() { throw new UnsupportedOperationException(); }
+    public void remove() {
+      throw new UnsupportedOperationException();
+    }
   }
 
   public static void main(String[] args) {

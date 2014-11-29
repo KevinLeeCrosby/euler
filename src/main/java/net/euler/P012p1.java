@@ -13,8 +13,8 @@ public class P012p1 {
     // Highly composite number formula
     Map<Long, Integer> count = new HashMap<>();
 
-    Primes bip = Primes.getInstance();
-    List<Long> factors = bip.factor(number);
+    Primes primes = Primes.getInstance();
+    List<Long> factors = primes.factor(number);
     for (Long factor : factors) {
       int exponent = count.containsKey(factor) ? count.get(factor) : 0;
       count.put(factor, exponent + 1);
