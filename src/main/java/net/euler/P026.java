@@ -12,7 +12,9 @@ public class P026 {
   private static final Primes P = Primes.getInstance();
 
   private static long order(long a, long n) { // for a = 10, called "digital logarithm"
-    if (isTerminating(n)) { return 0; }
+    if (isTerminating(n)) {
+      return 0;
+    }
     BigInteger base = BigInteger.valueOf(a);
     BigInteger modulus = BigInteger.valueOf(n);
     long k = 1;

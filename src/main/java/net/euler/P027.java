@@ -22,7 +22,7 @@ public class P027 {
     long bb = 0;
     for (long b : primes) {
       if (b > limit) break;
-      for (long a = (-limit + 1) | 1; a <= 0; a+=2) { // n(n-a)+b>=b ==> n >= a for all n ==> a <= 0
+      for (long a = (-limit + 1) | 1; a <= 0; a += 2) { // n(n-a)+b>=b ==> n >= a for all n ==> a <= 0
         for (long n = 1; primes.isPrime(quadratic(n, a, b)); n++) { // n = 0 covered by making b prime
           if (n > maximum) {
             maximum = n;
@@ -32,7 +32,7 @@ public class P027 {
         }
       }
     }
-    System.out.println("The product of the coefficients is " + (aa*bb) + " for Quadratic expression n^2 - " +
+    System.out.println("The product of the coefficients is " + (aa * bb) + " for Quadratic expression n^2 - " +
         -aa + " n + " + bb + ", which generates primes for n = 0.." + maximum + " primes.");
   }
 }
