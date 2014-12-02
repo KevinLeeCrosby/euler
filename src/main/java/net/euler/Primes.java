@@ -1,10 +1,12 @@
 package net.euler;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by kevin on 11/14/14.
@@ -106,15 +108,27 @@ public class Primes implements Iterable<Long> {
     List<Long> factors = factor(number);
     for (Long factor : Sets.newHashSet(factors)) {
       int exponent = Collections.frequency(factors, factor);
-      long numerator = Double.valueOf(Math.pow(factor, exponent + 1) - 1).intValue();
+      long numerator = pow(factor, exponent + 1) - 1;
       long denominator = factor - 1;
       sum *= numerator / denominator;
     }
     return sum;
   }
 
+  public Long pow(long base, long exponent) {
+    long product = 1;
+    while (exponent > 0) {
+      if (exponent % 2 == 1) { // i.e. if odd
+        product *= base;
+      }
+      exponent >>= 1;
+      base *= base;
+    }
+    return product;
+  }
+
   public Long aliquotSum(long number) { // a.k.a. sum proper divisors
-    return sumDivisors(number) - number;  // make it proper
+    return sumDivisors(number) - number; // make it proper
   }
 
   private class PrimeIterator implements Iterator<Long> {
