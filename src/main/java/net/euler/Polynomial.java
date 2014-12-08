@@ -1,5 +1,6 @@
 package net.euler;
 
+import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import org.apache.commons.math3.util.Pair;
 
@@ -18,19 +19,36 @@ public class Polynomial {
   // TODO:    define ZERO and operators
   private List<Long> coefficients;
 
-  public Polynomial(final int order) {
-    coefficients = Lists.newArrayList();
-    for (int n = 0; n < order; n++) {
+  public Polynomial() {
+    coefficients = Lists.newArrayList(0L);
+  }
+
+  public Polynomial(final int size) {
+    coefficients = Lists.newArrayList(0L);
+    for (int n = 1; n < size; n++) {
       coefficients.add(0L);
     }
   }
 
-  public Polynomial(final List<Long> coefficients) {
-    this.coefficients = Lists.newArrayList(coefficients);
+  public Polynomial(final Integer... coefficients) {
+    this(Lists.transform(Lists.newArrayList(coefficients), new Function<Integer, Long>() {
+      @Override
+      public Long apply(Integer input) {
+        return input.longValue();
+      }
+    }));
+  }
+
+  public Polynomial(final Long... coefficients) {
+    this(Lists.newArrayList(coefficients));
   }
 
   public Polynomial(final Polynomial polynomial) {
-    this.coefficients = Lists.newArrayList(polynomial.coefficients);
+    this(polynomial.coefficients);
+  }
+
+  public Polynomial(final List<Long> coefficients) {
+    this.coefficients = Lists.newArrayList(coefficients);
   }
 
   public int size() {
@@ -41,7 +59,14 @@ public class Polynomial {
     return index < size() ? coefficients.get(index) : 0L;
   }
 
+  public void set(final int index, final Integer coefficient) {
+    set(index, coefficient.longValue());
+  }
+
   public void set(final int index, final Long coefficient) {
+    for (int n = size(); n <= index; n++) {
+      coefficients.add(0L);
+    }
     coefficients.set(index, coefficient);
   }
 
@@ -106,9 +131,8 @@ public class Polynomial {
       }
       quotient.set(n, quotient.get(n) / divisor.get(0));
     }
-    quotient.trim();
 
-    Polynomial remainder = dividend.minus(divisor.multiply(quotient));
+    Polynomial remainder = dividend.minus(divisor.multiply(quotient.trim()));
 
     return Pair.create(quotient, remainder);
   }
@@ -232,8 +256,14 @@ public class Polynomial {
   }
 
   public static void main(String[] args) {
-    Polynomial a = new Polynomial(Lists.newArrayList(1L, 2L, 3L));
-    Polynomial b = new Polynomial(Lists.newArrayList(4L, 5L, 6L));
+    Polynomial p = new Polynomial(1L, 0L, 0L);
+    System.out.println("p = " + p);
+
+    p.set(25, -1);
+    System.out.println("p = " + p);
+
+    Polynomial a = new Polynomial(1L, 2L, 3L);
+    Polynomial b = new Polynomial(4L, 5L, 6L);
     System.out.println("a = " + a);
     System.out.println("b = " + b);
 
@@ -246,9 +276,9 @@ public class Polynomial {
     System.out.println("q = " + q);
     System.out.println("r = " + r);
 
-    Polynomial h = new Polynomial(Lists.newArrayList(-8L, -9L, -3L, -1L, -6L, 7L));
-    Polynomial f = new Polynomial(Lists.newArrayList(-3L, -6L, -1L,8L,-6L,3L,-1L,-9L,-9L,3L,-2L,5L,2L,-2L,-7L,-1L));
-    Polynomial g = new Polynomial(Lists.newArrayList(24L,75L,71L,-34L,3L,22L,-45L,23L,245L,25L,52L,25L,-67L,-96L,96L,31L,55L,36L,29L,-43L,-7L));
+    Polynomial h = new Polynomial(-8, -9, -3, -1, -6, 7);
+    Polynomial f = new Polynomial(-3, -6, -1, 8, -6, 3, -1, -9, -9, 3, -2, 5, 2, -2, -7, -1);
+    Polynomial g = new Polynomial(24, 75, 71, -34, 3, 22, -45, 23, 245, 25, 52, 25, -67, -96, 96, 31, 55, 36, 29, -43, -7);
 
     System.out.println("    h = " + h);
 
