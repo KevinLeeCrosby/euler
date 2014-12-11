@@ -1,5 +1,10 @@
 package net.euler;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+
+import java.util.List;
+
 /**
  * Useful math utilities.
  *
@@ -49,5 +54,55 @@ public class MathUtils {
       y = (x + radicand / x) / 2;
     }
     return x;
+  }
+
+  private static Function<Integer, Long> intToLong() {
+    return new Function<Integer, Long>() {
+      @Override
+      public Long apply(Integer input) {
+        return input.longValue();
+      }
+    };
+  }
+
+  public static Long gcd(final long a, final long b) {
+    return b == 0 ? a : gcd(b, a % b);
+  }
+
+  public static Long gcd(List<Long> list) {
+    long gcd = list.get(0);
+    for (int i = 1; i < list.size(); i++) {
+      gcd = gcd(gcd, list.get(i));
+    }
+    return gcd;
+  }
+
+  public static Long gcd(Long... list) {
+    return gcd(Lists.newArrayList(list));
+  }
+
+
+  public static Long gcd(Integer... list) {
+    return gcd(Lists.transform(Lists.newArrayList(list), intToLong()));
+  }
+
+  public static Long lcm(final long a, final long b) {
+    return a * b / gcd(a, b);
+  }
+
+  public static Long lcm(List<Long> list) {
+    long lcm = list.get(0);
+    for (int i = 1; i < list.size(); i++) {
+      lcm = lcm(lcm, list.get(i));
+    }
+    return lcm;
+  }
+
+  public static Long lcm(Long... list) {
+    return lcm(Lists.newArrayList(list));
+  }
+
+  public static Long lcm(Integer... list) {
+    return lcm(Lists.transform(Lists.newArrayList(list), intToLong()));
   }
 }

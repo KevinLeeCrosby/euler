@@ -108,23 +108,11 @@ public class Primes implements Iterable<Long> {
     List<Long> factors = factor(number);
     for (Long factor : Sets.newHashSet(factors)) {
       int exponent = Collections.frequency(factors, factor);
-      long numerator = pow(factor, exponent + 1) - 1;
+      long numerator = MathUtils.pow(factor, exponent + 1) - 1;
       long denominator = factor - 1;
       sum *= numerator / denominator;
     }
     return sum;
-  }
-
-  public Long pow(long base, long exponent) {
-    long product = 1;
-    while (exponent > 0) {
-      if (exponent % 2 == 1) { // i.e. if odd
-        product *= base;
-      }
-      exponent >>= 1;
-      base *= base;
-    }
-    return product;
   }
 
   public Long aliquotSum(long number) { // a.k.a. sum proper divisors
