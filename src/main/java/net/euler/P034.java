@@ -6,7 +6,6 @@ import com.google.common.collect.Lists;
 import java.util.List;
 
 import static net.euler.MathUtils.pow;
-import static org.apache.commons.math3.util.CombinatoricsUtils.factorial;
 
 /**
  * 145 is a curious number, as 1! + 4! + 5! = 1 + 24 + 120 = 145.
@@ -18,6 +17,8 @@ import static org.apache.commons.math3.util.CombinatoricsUtils.factorial;
  * @author Kevin Crosby
  */
 public class P034 {
+  private static List<Integer> factorial = Lists.newArrayList(1);
+
   private static boolean isFactorion(final int number, final int base) {
     List<Integer> digits = Lists.newArrayList();
     int sum = 0;
@@ -33,6 +34,13 @@ public class P034 {
     }
     System.out.println("Found factorion " + number + " = " + Joiner.on("! + ").join(Lists.reverse(digits)) + "!" );
     return true;
+  }
+
+  private static int factorial(final int n) {
+    if (factorial.size() <= n) {
+      factorial.add(n * factorial(n - 1));
+    }
+    return factorial.get(n);
   }
 
   public static void main(String[] args) {
