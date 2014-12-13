@@ -12,6 +12,22 @@ import java.util.List;
  */
 public class MathUtils {
   /**
+   * Long/Integer common logarithm.
+   *
+   * @param antilogarithm Antilogarithm to take common logarithm of.
+   * @return Discrete common logarithm.
+   */
+  public static Long log10(long antilogarithm) {
+    long mantissa = 0;
+    long n = antilogarithm / 10;
+    while (n > 0) {
+      n /= 10;
+      mantissa++;
+    }
+    return mantissa;
+  }
+
+  /**
    * Long/Integer log base 2.
    *
    * @param antilogarithm Antilogarithm to take log2 of.
