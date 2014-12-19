@@ -9,6 +9,10 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import static java.math.BigInteger.ZERO;
+import static java.math.BigInteger.ONE;
+
+
 /**
  * Created by kevin on 11/25/14.
  */
@@ -48,7 +52,7 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
       synchronized (this) {
         if (index >= primes.size()) {
           for (int i = primes.size(); i <= index; i++) {
-            BigInteger nextOdd = primes.get(primes.size() - 1).add(BigInteger.ONE).or(BigInteger.ONE); // get next odd (works for number 2)
+            BigInteger nextOdd = primes.get(primes.size() - 1).add(ONE).or(ONE); // get next odd (works for number 2)
             while (!isPrime(nextOdd)) {
               nextOdd = nextOdd.add(TWO);
             }
@@ -69,7 +73,7 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
     BigInteger prime;
     do {
       prime = get(i++);
-      if (number.mod(prime).equals(BigInteger.ZERO)) {
+      if (number.mod(prime).equals(ZERO)) {
         return false;
       }
     } while (prime.compareTo(number.divide(prime)) != 1); // i.e. if prime <= sqrt(number), p <= n/p
@@ -78,25 +82,63 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
 
   public List<BigInteger> factor(BigInteger number) {
     List<BigInteger> factors = Lists.newArrayList();
+    if (number.compareTo(TWO) == -1) {
+      return factors;
+    }
+
     int i = 0;
     BigInteger prime;
     do {
       prime = get(i++);
-      while (number.mod(prime).equals(BigInteger.ZERO)) {
+      while (number.mod(prime).equals(ZERO)) {
         number = number.divide(prime);
         factors.add(prime);
       }
     } while (prime.compareTo(number.divide(prime)) != 1); // i.e. if prime <= sqrt(number), p <= n/p
-    if (!number.equals(BigInteger.ONE)) {
+    if (!number.equals(ONE)) {
       factors.add(number);
     }
 
     return factors;
   }
 
-  public BigInteger countDivisors(BigInteger number) {
-    // Highly composite number formula
-    BigInteger count = BigInteger.ONE;
+  public List<BigInteger> divisors(BigInteger number) {
+    // factor number
+    List<BigInteger> factors = factor(number);
+    if (factors.isEmpty()) {
+      return number.compareTo(ONE) == 0 ? Lists.newArrayList(ONE) : Lists.<BigInteger>newArrayList();
+    }
+
+    // construct lists of powers
+    List<List<BigInteger>> lists = Lists.newArrayList();
+    for (BigInteger factor : Sets.newHashSet(factors)) {
+      List<BigInteger> powers = Lists.newArrayList();
+      for (int exponent = 1; exponent <= Collections.frequency(factors, factor); exponent++) {
+        powers.add(factor.pow(exponent));
+      }
+      lists.add(powers);
+    }
+
+    // take Kronecker product of lists of powers
+    List<BigInteger> divisors = Lists.newArrayList(ONE);
+    for (List<BigInteger> powers : lists) {
+      List<BigInteger> products = Lists.newArrayList();
+      for (BigInteger power : powers) {
+        for (BigInteger divisor : divisors) {
+          products.add(power.multiply(divisor));
+        }
+      }
+      divisors.addAll(products);
+    }
+    Collections.sort(divisors);
+    return divisors;
+  }
+
+  public BigInteger countDivisors(BigInteger number) { // Highly composite number formula
+    if (number.compareTo(ONE) == -1) {
+      return ZERO;
+    }
+    BigInteger count = ONE;
     List<BigInteger> factors = factor(number);
     for (BigInteger factor : Sets.newHashSet(factors)) {
       int exponent = Collections.frequency(factors, factor);
@@ -106,12 +148,15 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
   }
 
   public BigInteger sumDivisors(BigInteger number) {
-    BigInteger sum = BigInteger.ONE;
+    if (number.compareTo(ONE) == -1) {
+      return ZERO;
+    }
+    BigInteger sum = ONE;
     List<BigInteger> factors = factor(number);
     for (BigInteger factor : Sets.newHashSet(factors)) {
       int exponent = Collections.frequency(factors, factor);
-      BigInteger numerator = factor.pow(exponent + 1).subtract(BigInteger.ONE);
-      BigInteger denominator = factor.subtract(BigInteger.ONE);
+      BigInteger numerator = factor.pow(exponent + 1).subtract(ONE);
+      BigInteger denominator = factor.subtract(ONE);
       sum = sum.multiply(numerator).divide(denominator);
     }
     return sum;

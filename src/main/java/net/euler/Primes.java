@@ -40,7 +40,7 @@ public class Primes implements Iterable<Long> {
     return new PrimeIterator();
   }
 
-  public long get(int index) {
+  public Long get(int index) {  // TODO:  switch to Sieve of Atkin for up to Prime n??? -- make Long generate(long number)?
     assert index >= 0 : "index must be...";
     if (index >= primes.size()) {
       synchronized (this) {
@@ -76,6 +76,10 @@ public class Primes implements Iterable<Long> {
 
   public List<Long> factor(long number) {
     List<Long> factors = Lists.newArrayList();
+    if (number < 2L) {
+      return factors;
+    }
+
     int i = 0;
     long prime;
     do {
@@ -85,15 +89,49 @@ public class Primes implements Iterable<Long> {
         factors.add(prime);
       }
     } while (prime <= number / prime); // i.e. if prime <= sqrt(number), p <= n/p
-    if (number != 1L) {
+    if (number > 1L) {
       factors.add(number);
     }
 
     return factors;
   }
 
-  public Long countDivisors(long number) {
-    // Highly composite number formula
+  public List<Long> divisors(long number) {
+    // factor number
+    List<Long> factors = factor(number);
+    if (factors.isEmpty()) {
+      return number == 1 ? Lists.newArrayList(1L) : Lists.<Long>newArrayList();
+    }
+
+    // construct lists of powers
+    List<List<Long>> lists = Lists.newArrayList();
+    for (long factor : Sets.newHashSet(factors)) {
+      List<Long> powers = Lists.newArrayList();
+      for (int exponent = 1; exponent <= Collections.frequency(factors, factor); exponent++) {
+        powers.add(MathUtils.pow(factor, exponent));
+      }
+      lists.add(powers);
+    }
+
+    // take Kronecker product of lists of powers
+    List<Long> divisors = Lists.newArrayList(1L);
+    for (List<Long> powers : lists) {
+      List<Long> products = Lists.newArrayList();
+      for (long power : powers) {
+        for (long divisor : divisors) {
+          products.add(power * divisor);
+        }
+      }
+      divisors.addAll(products);
+    }
+    Collections.sort(divisors);
+    return divisors;
+  }
+
+  public Long countDivisors(long number) { // Highly composite number formula
+    if (number < 1L) {
+      return 0L;
+    }
     long count = 1;
     List<Long> factors = factor(number);
     for (Long factor : Sets.newHashSet(factors)) {
@@ -104,6 +142,9 @@ public class Primes implements Iterable<Long> {
   }
 
   public Long sumDivisors(long number) {
+    if (number < 1L) {
+      return 0L;
+    }
     long sum = 1;
     List<Long> factors = factor(number);
     for (Long factor : Sets.newHashSet(factors)) {
