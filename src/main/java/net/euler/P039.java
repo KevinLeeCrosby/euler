@@ -5,7 +5,6 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang3.tuple.Triple;
 
-import java.util.Map;
 import java.util.Set;
 
 import static net.euler.MathUtils.gcd;
@@ -42,7 +41,7 @@ public class P039 {
     // generate all Pythagorean triples with perimeter up to max perimeter
     Multimap<Integer, Triple<Integer, Integer, Integer>> map = ArrayListMultimap.create();
     int maxSemiPerimeter = maxPerimeter / 2;
-    for (int k = 1; k <= maxSemiPerimeter; k++) { // k = 1 produces primitive Pythagorean triples (k = gcd(a, c))
+    for (int k = 1; k <= maxSemiPerimeter / 2; k++) { // k = 1 produces primitive Pythagorean triples (k = gcd(a, c))
       for (int m = 2; m < maxSemiPerimeter / k; m++) {
         for (int n = 1 + m % 2; n < m; n += 2) { // force m - n to be odd
           int p = perimeter(k, m, n);
@@ -58,9 +57,6 @@ public class P039 {
     int bestPerimeter = 0;
     for (int p : Sets.newTreeSet(map.keySet())) {
       Set<Triple<Integer, Integer, Integer>> triples = Sets.newTreeSet(map.get(p));
-      if (triples.size() != map.get(p).size()) {
-        System.err.println("Different sizes for perimeter " + p);
-      }
       if (triples.size() > maxSolutions) {
         maxSolutions = triples.size();
         bestPerimeter = p;
