@@ -2,6 +2,7 @@ package net.euler;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import org.apache.commons.math3.util.Pair;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -72,6 +73,32 @@ public class Primes implements Iterable<Long> {
       }
     } while (prime <= number / prime); // i.e. if prime <= sqrt(number), p <= n/p
     return true;
+  }
+
+  public boolean isPerfectCube(final long number) {
+    return isPerfectPowerOf(number, 3);
+  }
+
+  public boolean isPerfectSquare(final long number) {
+    return isPerfectPowerOf(number, 2);
+  }
+
+  public boolean isPerfectPowerOf(final long number, final long degree) {
+    return degree > 1 && degree(number) == degree;
+  }
+
+  public boolean isPerfectPower(final long number) {
+    return degree(number) > 1;
+  }
+
+  public Long degree(final long power) {
+    List<Long> factors = factor(power);
+    long degree = 0;
+    for (long factor : Sets.newHashSet(factors)) {
+      int exponent = Collections.frequency(factors, factor);
+      degree = MathUtils.gcd(degree, exponent);
+    }
+    return degree;
   }
 
   public List<Long> factor(long number) {
