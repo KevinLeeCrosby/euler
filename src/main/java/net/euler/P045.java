@@ -33,7 +33,7 @@ public class P045 {
   // but only every other triangular number (the 1st, 3rd, 5th, 7th, etc.) is a hexagonal number
   // -- Wikipedia Hexagonal number
   private static int d2t(int n) {
-    return 2 * n - 1;
+    return dt(n) + dt(n - 1);
   }
 
   private static int dp(int n) {
@@ -58,8 +58,7 @@ public class P045 {
     t += 2;
     tn += d2t(t);
     hn += dh(++h);
-    boolean found = tn == pn && pn == hn;
-    while (!found) {
+    while (tn != pn || pn != hn) {
       if (pn < hn) {
         pn += dp(++p);
       } else { // if (pn > hn)
@@ -67,7 +66,6 @@ public class P045 {
         tn += d2t(t);
         hn += dh(++h);
       }
-      found = tn == pn && pn == hn;
     }
     System.out.print("The next triangle number that is also pentagonal and hexagonal is ");
     System.out.println("T" + t + " = P" + p + " = H" + h + " = " + tn + ".");
