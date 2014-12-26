@@ -8,7 +8,6 @@ import com.google.common.collect.SetMultimap;
 import com.google.common.collect.TreeMultimap;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * The arithmetic sequence, 1487, 4817, 8147, in which each of the terms increases by 3330, is unusual in two ways: (i)
@@ -60,7 +59,7 @@ public class P049 {
       for (int difference : differenceMap.keySet()) {
         List<Integer> numbers = Lists.newArrayList(differenceMap.get(difference));
         List<Integer> sequence = Lists.newArrayList(numbers.get(0));
-        for (int k = 1; k < numbers.size() ; k++) {
+        for (int k = 1; k < numbers.size(); k++) {
           int number = numbers.get(k);
           if (number == numbers.get(k - 1) + difference) {
             sequence.add(number);
