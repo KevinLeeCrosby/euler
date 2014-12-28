@@ -9,12 +9,13 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import static java.math.BigInteger.ZERO;
 import static java.math.BigInteger.ONE;
+import static java.math.BigInteger.ZERO;
+import static net.euler.MathUtils.gcd;
 
 
 /**
- * Created by kevin on 11/25/14.
+ * Prime number generator (BigInteger) and related methods.
  */
 public class BigIntegerPrimes implements Iterable<BigInteger> {
   private static BigIntegerPrimes instance = null;
@@ -47,7 +48,7 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
   }
 
   public BigInteger get(int index) {
-    assert index >= 0 : "index must be...";
+    assert index >= 0 : "Index must be positive!";
     if (index >= primes.size()) {
       synchronized (this) {
         if (index >= primes.size()) {
@@ -78,6 +79,32 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
       }
     } while (prime.compareTo(number.divide(prime)) != 1); // i.e. if prime <= sqrt(number), p <= n/p
     return true;
+  }
+
+  public boolean isPerfectCube(final BigInteger number) {
+    return isPerfectPowerOf(number, 3);
+  }
+
+  public boolean isPerfectSquare(final BigInteger number) {
+    return isPerfectPowerOf(number, 2);
+  }
+
+  public boolean isPerfectPowerOf(final BigInteger number, final long degree) {
+    return degree > 1 && degree(number) == degree;
+  }
+
+  public boolean isPerfectPower(final BigInteger number) {
+    return degree(number) > 1;
+  }
+
+  public Long degree(final BigInteger power) {
+    List<BigInteger> factors = factor(power);
+    long degree = 0;
+    for (BigInteger factor : Sets.newHashSet(factors)) {
+      int exponent = Collections.frequency(factors, factor);
+      degree = gcd(degree, exponent);
+    }
+    return degree;
   }
 
   public List<BigInteger> factor(BigInteger number) {

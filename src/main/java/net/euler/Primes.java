@@ -9,8 +9,10 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import static net.euler.MathUtils.*;
+
 /**
- * Created by kevin on 11/14/14.
+ * Prime number generator (64 bit) and related methods.
  */
 public class Primes implements Iterable<Long> {
   private static Primes instance = null;
@@ -42,11 +44,11 @@ public class Primes implements Iterable<Long> {
   }
 
   public Long get(int index) {  // TODO:  switch to Sieve of Atkin for up to Prime n??? -- make Long generate(long number)?
-    assert index >= 0 : "index must be...";
+    assert index >= 0 : "Index must be positive!";
     if (index >= primes.size()) {
       synchronized (this) {
         if (index >= primes.size()) {
-          for (int i = primes.size(); i <= index; i++) {
+          for (int i = primes.size(); i <= index; i++) { // TODO:  replace nextOdd with primonial function?
             long nextOdd = (primes.get(primes.size() - 1) + 1L) | 1L; // get next odd (works for number 2)
             while (!isPrime(nextOdd)) {
               nextOdd += 2;
@@ -96,7 +98,7 @@ public class Primes implements Iterable<Long> {
     long degree = 0;
     for (long factor : Sets.newHashSet(factors)) {
       int exponent = Collections.frequency(factors, factor);
-      degree = MathUtils.gcd(degree, exponent);
+      degree = gcd(degree, exponent);
     }
     return degree;
   }
@@ -135,7 +137,7 @@ public class Primes implements Iterable<Long> {
     for (long factor : Sets.newHashSet(factors)) {
       List<Long> powers = Lists.newArrayList();
       for (int exponent = 1; exponent <= Collections.frequency(factors, factor); exponent++) {
-        powers.add(MathUtils.pow(factor, exponent));
+        powers.add(pow(factor, exponent));
       }
       lists.add(powers);
     }
@@ -176,7 +178,7 @@ public class Primes implements Iterable<Long> {
     List<Long> factors = factor(number);
     for (Long factor : Sets.newHashSet(factors)) {
       int exponent = Collections.frequency(factors, factor);
-      long numerator = MathUtils.pow(factor, exponent + 1) - 1;
+      long numerator = pow(factor, exponent + 1) - 1;
       long denominator = factor - 1;
       sum *= numerator / denominator;
     }
