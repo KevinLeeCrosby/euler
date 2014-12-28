@@ -119,8 +119,7 @@ public class P051 {
       int newDigits = log10(prime).intValue() + 1;
       if (newDigits > noDigits) {
         for (int noReplacements : possibleNoReplacements) {
-          if (noDigits - 1 < noReplacements) continue;
-          //for (int noReplacements = 1; loop && noReplacements < noDigits; noReplacements++) {
+          if (noDigits - 1 < noReplacements) break;
           for (List<Integer> indices : getListOfIndices(noDigits, noReplacements)) {
             Multimap<String, Long> sequences = ArrayListMultimap.create();
             for (Long p : primeSet) {
