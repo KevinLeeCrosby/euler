@@ -1,6 +1,5 @@
 package net.euler;
 
-import com.google.common.base.Joiner;
 import com.google.common.collect.Sets;
 
 import java.math.BigInteger;
