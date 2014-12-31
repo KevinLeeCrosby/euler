@@ -29,7 +29,7 @@ import static net.euler.PokerHand.Category.*;
 public class PokerHand extends Hand implements Comparable<PokerHand> {
   public static enum Category {
     HIGH_CARD, ONE_PAIR, TWO_PAIR, THREE_OF_A_KIND, STRAIGHT, FLUSH,
-    FULL_HOUSE, FOUR_OF_A_KIND, STRAIGHT_FLUSH, ROYAL_FLUSH //, FIVE_OF_A_KIND
+    FULL_HOUSE, FOUR_OF_A_KIND, STRAIGHT_FLUSH, ROYAL_FLUSH
   }
 
   public PokerHand(String string) {
