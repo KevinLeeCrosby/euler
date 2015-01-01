@@ -2,7 +2,7 @@ package net.euler;
 
 import java.math.BigInteger;
 
-import static java.math.BigInteger.*;
+import static java.math.BigInteger.ONE;
 import static java.math.BigInteger.valueOf;
 
 /**
@@ -26,7 +26,7 @@ public class P056 {
   }
 
   public static void main(String[] args) {
-int maxSum = 0;
+    int maxSum = 0;
     for (BigInteger a = valueOf(90); a.compareTo(valueOf(100)) == -1; a = a.add(ONE)) {
       for (int b = 90; b < 100; b++) {
         int digitSum = digitSum(a.pow(b));
