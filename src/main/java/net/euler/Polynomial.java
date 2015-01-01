@@ -14,7 +14,7 @@ import static java.lang.Math.*;
  * @author Kevin Crosby
  */
 public class Polynomial {
-  // TODO:  find a way to make generic
+  // TODO:  find a way to make generic **OR** make rational coefficients
   // TODO:    no statics, Polynomial<N extends Number & Comparable<? super N>>
   // TODO:    define ZERO and operators
   private List<Long> coefficients;
@@ -68,6 +68,83 @@ public class Polynomial {
       coefficients.add(0L);
     }
     coefficients.set(index, coefficient);
+  }
+
+  /**
+   * Useful for differentiating an integer polynomial.
+  *
+   * @return Derivative of polynomial.
+   */
+  public Polynomial differentiate() {
+    return differentiate(this);
+  }
+
+  /**
+   * Useful for differentiating an integer polynomial.
+   *
+   * @param antiderivative Polynomial to differentiate.
+   * @return Derivative of polynomial.
+   *
+   */
+  public static Polynomial differentiate(final Polynomial antiderivative) {
+    int len1 = antiderivative.size();
+    int len2 = len1 - 1;
+    Polynomial derivative = new Polynomial(len2);
+    for (int n = 0; n < len2; n++) {
+      derivative.set(n, (n +1) * antiderivative.get(n + 1));
+    }
+    return derivative.trim();
+  }
+
+  /**
+   * Useful for integrating an integer polynomial.
+   * NOTE:  Fractional parts of coefficients are truncated.
+   *
+   * @return Integral of polynomial.
+   */
+  public Polynomial integrate() {
+    return integrate(this);
+  }
+
+  /**
+   * Useful for integrating an integer polynomial.
+   * NOTE:  Fractional parts of coefficients are truncated.
+   *
+   * @param constant Constant of integration.
+   * @return Integral of polynomial.
+   */
+  public Polynomial integrate(final long constant) {
+    return integrate(this, constant);
+  }
+
+  /**
+   * Useful for integrating an integer polynomial.
+   * NOTE:  Fractional parts of coefficients are truncated.
+   *
+   * @param integrand Polynomial to integrate.
+   * @return Integral of polynomial.
+   */
+  public static Polynomial integrate(final Polynomial integrand) {
+    return integrate(integrand, 0);
+  }
+
+  /**
+   * Useful for integrating an integer polynomial.
+   * NOTE:  Fractional parts of coefficients are truncated.
+   *
+   * @param integrand Polynomial to integrate.
+   * @param constant Constant of integration.
+   * @return Integral of polynomial.
+   */
+  public static Polynomial integrate(final Polynomial integrand, final long constant) {
+    int len1 = integrand.size();
+    int len2 = len1 + 1;
+    Polynomial integral = new Polynomial(len2);
+    integral.set(0, constant);
+    for (int n = 1; n < len2; n++) {
+      integral.set(n, integrand.get(n - 1) / n); // FIXME:  for rationals
+    }
+    return integral.trim();
   }
 
   /**
@@ -132,7 +209,7 @@ public class Polynomial {
       quotient.set(n, quotient.get(n) / divisor.get(0));
     }
 
-    Polynomial remainder = dividend.minus(divisor.multiply(quotient.trim()));
+    Polynomial remainder = dividend.subtract(divisor.multiply(quotient.trim()));
 
     return Pair.create(quotient, remainder);
   }
@@ -143,8 +220,8 @@ public class Polynomial {
    * @param addend Second polynomial to add.
    * @return Sum of polynomials.
    */
-  public final Polynomial plus(final Polynomial addend) {
-    return plus(this, addend);
+  public final Polynomial add(final Polynomial addend) {
+    return add(this, addend);
   }
 
   /**
@@ -154,7 +231,7 @@ public class Polynomial {
    * @param addend Second polynomial to add.
    * @return Sum of polynomials.
    */
-  public static Polynomial plus(final Polynomial augend, final Polynomial addend) {
+  public static Polynomial add(final Polynomial augend, final Polynomial addend) {
     int len1 = augend.size();
     int len2 = addend.size();
     //int len3 = max(len1, len2);
@@ -172,8 +249,8 @@ public class Polynomial {
    * @param subtrahend Polynomial to subtract.
    * @return Difference of polynomials.
    */
-  public final Polynomial minus(final Polynomial subtrahend) {
-    return minus(this, subtrahend);
+  public final Polynomial subtract(final Polynomial subtrahend) {
+    return subtract(this, subtrahend);
   }
 
   /**
@@ -183,11 +260,11 @@ public class Polynomial {
    * @param subtrahend Polynomial to subtract.
    * @return Difference of polynomials.
    */
-  public static Polynomial minus(final Polynomial minuend, final Polynomial subtrahend) {
+  public static Polynomial subtract(final Polynomial minuend, final Polynomial subtrahend) {
     int len1 = minuend.size();
     int len2 = subtrahend.size();
     //int len3 = max(len1, len2);
-    Polynomial difference = new Polynomial(len1 >= len2 ? minuend : negative(subtrahend));
+    Polynomial difference = new Polynomial(len1 >= len2 ? minuend : negate(subtrahend));
     for (int n = 0; n < min(len1, len2); n++) {
       difference.set(n, minuend.get(n) - subtrahend.get(n));
     }
@@ -200,8 +277,8 @@ public class Polynomial {
    *
    * @return Negation of polynomial.
    */
-  public final Polynomial negative() {
-    return negative(this);
+  public final Polynomial negate() {
+    return negate(this);
   }
 
   /**
@@ -210,7 +287,7 @@ public class Polynomial {
    * @param negatend Polynomial to negate.
    * @return Negation of polynomial.
    */
-  public static Polynomial negative(final Polynomial negatend) {
+  public static Polynomial negate(final Polynomial negatend) {
     Polynomial negation = new Polynomial(negatend).trim();
     for (int n = 0; n < negatend.size(); n++) {
       negation.set(n, -negatend.get(n));
@@ -292,5 +369,11 @@ public class Polynomial {
     System.out.println("    f = " + f);
     System.out.println("g / h = " + div);
     System.out.println("g % h = " + mod);
+
+    Polynomial dg = g.differentiate();
+    Polynomial idg = dg.integrate(g.get(0));
+    System.out.println("    g = " + g);
+    System.out.println("   dg = " + dg);
+    System.out.println("  idg = " + idg);
   }
 }
