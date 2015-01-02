@@ -16,6 +16,8 @@ import java.util.List;
  * It can be verified that the sum of the numbers on the diagonals is 101.
  * <p/>
  * What is the sum of the numbers on the diagonals in a 1001 by 1001 spiral formed in the same way?
+ *
+ * @author Kevin Crosby
  */
 public class P028 {
   private static long sumOfDiagonalsInSquareSpiral(int m) { // (4*m^3 + 3*m^2 + 8*m - 9) / 6, also see sequence A114254
