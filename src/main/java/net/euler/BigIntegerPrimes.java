@@ -11,8 +11,7 @@ import java.util.List;
 
 import static java.math.BigInteger.ONE;
 import static java.math.BigInteger.ZERO;
-import static net.euler.MathUtils.gcd;
-import static net.euler.MathUtils.sqrt;
+import static net.euler.MathUtils.*;
 
 
 /**
@@ -60,7 +59,6 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
     for (BigInteger odd = THREE, mask = ONE; odd.compareTo(limit) < 1; odd = odd.add(TWO), mask.shiftLeft(1)) {
       if (!sieve.testBit(++bit)) { // i.e. if is prime
         primes.add(odd);
-        System.out.print(odd + " ");
         int setBit = bit;
         for (BigInteger multiple = THREE.multiply(odd); multiple.compareTo(limit) < 1;
              multiple = multiple.add(TWO.multiply(odd))) {
@@ -69,7 +67,6 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
         }
       }
     }
-    System.out.println();
   }
 
   public BigInteger get(final int index) {
@@ -253,7 +250,7 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
       for (BigInteger prime : primes) {
         System.out.print(prime + " ");
         if (i++ == limit) {
-          System.out.println("");
+          System.out.println();
           break;
         }
       }
