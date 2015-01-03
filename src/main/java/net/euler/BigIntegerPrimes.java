@@ -12,6 +12,7 @@ import java.util.List;
 import static java.math.BigInteger.ONE;
 import static java.math.BigInteger.ZERO;
 import static net.euler.MathUtils.gcd;
+import static net.euler.MathUtils.sqrt;
 
 
 /**
@@ -21,6 +22,7 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
   private static BigIntegerPrimes instance = null;
   private List<BigInteger> primes = new ArrayList<>();
   private static final BigInteger TWO = BigInteger.valueOf(2L);
+  private static final BigInteger THREE = BigInteger.valueOf(3L);
 
   private BigIntegerPrimes() {
     primes.add(TWO);
@@ -47,7 +49,30 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
     return new BigIntegerPrimeIterator();
   }
 
-  public BigInteger get(int index) {
+  public void generate(final BigInteger limit) { // slightly improved Sieve of Eratosthenes
+    int noPrimes = primes.size();
+    BigInteger maxPrime = noPrimes > 0 ? primes.get(noPrimes - 1) : ZERO;
+    if (limit.compareTo(maxPrime) == -1) return; // i.e. if limit < maxPrime
+
+    primes = Lists.newArrayList(TWO); // start over, for now
+    BigInteger sieve = ZERO; // fill with false (inverted logic), for n >= 3;
+    int bit = -1;
+    for (BigInteger odd = THREE, mask = ONE; odd.compareTo(limit) < 1; odd = odd.add(TWO), mask.shiftLeft(1)) {
+      if (!sieve.testBit(++bit)) { // i.e. if is prime
+        primes.add(odd);
+        System.out.print(odd + " ");
+        int setBit = bit;
+        for (BigInteger multiple = THREE.multiply(odd); multiple.compareTo(limit) < 1;
+             multiple = multiple.add(TWO.multiply(odd))) {
+          setBit += odd.intValue();
+          sieve = sieve.setBit(setBit); // i.e. set to composite
+        }
+      }
+    }
+    System.out.println();
+  }
+
+  public BigInteger get(final int index) {
     assert index >= 0 : "Index must be positive!";
     if (index >= primes.size()) {
       synchronized (this) {
@@ -66,18 +91,19 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
     return primes.get(index);
   }
 
-  public boolean isPrime(BigInteger number) {
+  public boolean isPrime(final BigInteger number) {
     if (number.compareTo(primes.get(primes.size() - 1)) != 1) { // gt == 1, le != 1
       return primes.contains(number);
     }
     int i = 0;
     BigInteger prime;
+    BigInteger root = sqrt(number);
     do {
       prime = get(i++);
       if (number.mod(prime).equals(ZERO)) {
         return false;
       }
-    } while (prime.compareTo(number.divide(prime)) != 1); // i.e. if prime <= sqrt(number), p <= n/p
+    } while (prime.compareTo(root) != 1); // i.e. if prime <= sqrt(number)
     return true;
   }
 
@@ -115,13 +141,14 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
 
     int i = 0;
     BigInteger prime;
+    BigInteger root = sqrt(number);
     do {
       prime = get(i++);
       while (number.mod(prime).equals(ZERO)) {
         number = number.divide(prime);
         factors.add(prime);
       }
-    } while (prime.compareTo(number.divide(prime)) != 1); // i.e. if prime <= sqrt(number), p <= n/p
+    } while (prime.compareTo(root) != 1); // i.e. if prime <= sqrt(number)
     if (!number.equals(ONE)) {
       factors.add(number);
     }
@@ -215,6 +242,11 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
   }
 
   public static void main(String[] args) {
+    {
+      BigIntegerPrimes primes = BigIntegerPrimes.getInstance();
+      primes.generate(BigInteger.valueOf(10000L));
+    }
+
     for (int limit : Lists.newArrayList(10, 20, 30, 15)) {
       BigIntegerPrimes primes = BigIntegerPrimes.getInstance();
       int i = 0;
