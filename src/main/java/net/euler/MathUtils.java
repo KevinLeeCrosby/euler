@@ -94,6 +94,34 @@ public class MathUtils {
   }
 
   /**
+   * Modular exponentiation.
+   *
+   * @param base     Base to take power of.
+   * @param exponent Exponent to raise base to.
+   * @param modulus  Modulus to apply to power.
+   * @return Base raised to the exponent power.
+   */
+  public static Long modPow(long base, long exponent, long modulus) {
+    // use BigInteger method if in danger of overflow
+    if (modulus - 1 > sqrt(Long.MAX_VALUE)) {
+      BigInteger product = BigInteger.valueOf(base).modPow(BigInteger.valueOf(exponent), BigInteger.valueOf(modulus));
+      return product.longValue();
+    }
+
+    // long method
+    long product = 1;
+    base = base % modulus;
+    while (exponent > 0) {
+      if (exponent % 2 == 1) { // i.e. if odd
+        product = (product * base) % modulus;
+      }
+      exponent >>= 1;
+      base = (base * base) % modulus;
+    }
+    return product;
+  }
+
+  /**
    * Long/Integer square root.
    *
    * @param radicand Number to take square root of.
