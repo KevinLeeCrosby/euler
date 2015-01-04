@@ -3,23 +3,20 @@ package net.euler;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
-import static net.euler.MathUtils.gcd;
-import static net.euler.MathUtils.pow;
+import static net.euler.MathUtils.*;
 
 /**
  * Prime number generator (64 bit) and related methods.
  */
 public class Primes implements Iterable<Long> {
   private static Primes instance = null;
-  private List<Long> primes = new ArrayList<>();
+  private List<Long> primes;
+  private static final Long LIMIT = 341550071728321L;
 
   private Primes() {
-    primes.add(2L);
+    primes = Lists.newArrayList(2L, 3L, 5L, 7L, 11L, 13L, 17L, 19L, 23L); // required for isPrime
   }
 
   public static Primes getInstance() {
@@ -34,7 +31,7 @@ public class Primes implements Iterable<Long> {
   }
 
   /**
-   * Returns an iterator over a set of elements of type Integer.
+   * Returns an iterator over a set of elements of type Long.
    *
    * @return an Iterator.
    */
@@ -43,12 +40,35 @@ public class Primes implements Iterable<Long> {
     return new PrimeIterator();
   }
 
-  public Long get(int index) {  // TODO:  switch to Sieve of Atkin for up to Prime n??? -- make Long generate(long number)?
+  /**
+   * Generate primes using a slightly improved Sieve of Eratosthenes
+   *
+   * @param limit Number to generate primes up to.
+   */
+  public void generate(final long limit) { // TODO:  implement more optimized Sieve of Eratosthenes
+    int noPrimes = primes.size();
+    long maxPrime = noPrimes > 0 ? primes.get(noPrimes - 1) : 0L;
+    if (limit < maxPrime) return;
+
+    primes = Lists.newArrayList(2L); // start over, for now
+    BitSet sieve = new BitSet(); // fill with false (inverted logic), for n >= 3;
+    for (int bit = sieve.nextClearBit(0); bit >= 0 && 2 * bit + 3 <= limit; bit = sieve.nextClearBit(bit + 1)) {
+      Long odd = 2L * bit + 3L;
+      primes.add(odd);
+      int setBit = bit;
+      for (long multiple = 3L * odd; multiple <= limit; multiple += 2L * odd) {
+        setBit += odd.intValue();
+        sieve.set(setBit); // set to composite
+      }
+    }
+  }
+
+  public Long get(final int index) {
     assert index >= 0 : "Index must be positive!";
     if (index >= primes.size()) {
       synchronized (this) {
         if (index >= primes.size()) {
-          for (int i = primes.size(); i <= index; i++) { // TODO:  replace nextOdd with primonial function?
+          for (int i = primes.size(); i <= index; i++) { // TODO:  replace nextOdd with primorial function?
             long nextOdd = (primes.get(primes.size() - 1) + 1L) | 1L; // get next odd (works for number 2)
             while (!isPrime(nextOdd)) {
               nextOdd += 2;
@@ -62,18 +82,53 @@ public class Primes implements Iterable<Long> {
     return primes.get(index);
   }
 
-  public boolean isPrime(long number) {
-    if (number <= primes.get(primes.size() - 1)) {
-      return primes.contains(number);
+  private boolean contains(final long number) { // uses prime counting function for faster lookups
+    int maxIndex = primes.size() - 1;
+    if (number > primes.get(maxIndex)) return false;
+
+    Double pi = 1.25506 * number / Math.log(number); // approximate number of primes less than or equal to number
+    int index = pi.intValue() - 1;
+    if (index > primes.size() - 1) index = maxIndex;
+    long prime = primes.get(index);
+    if (number > prime) {
+      while (number > prime && index < maxIndex) prime = primes.get(++index);
+    } else if (number < prime) {
+      while (number < prime && index > 0) prime = primes.get(--index);
     }
-    int i = 0;
-    long prime;
-    do {
-      prime = get(i++);
-      if (number % prime == 0) {
-        return false;
+    return number == prime;
+  }
+
+  /**
+   * Test if a number is prime using the Miller-Rabin Primality Test, which is guaranteed to correctly distinguish
+   * composites and primes up to 341,550,071,728,321 using the first 9 prime numbers.
+   *
+   * @param n Number to be tested.
+   * @return
+   */
+  public boolean isPrime(final long n) { // TODO:  add pseudoprime checks above LIMIT???
+    if (n > LIMIT) System.err.println("WARNING!  Primality check not guaranteed for number " + n);
+    if (n <= 3) return n > 1;
+    if (n % 2 == 0) return false;
+    if (n <= primes.get(primes.size() - 1)) return contains(n);
+    long d = n - 1;
+    int s = 0;
+    while (d % 2 == 0) {
+      d >>= 1;
+      s++;
+    }
+    for (int i = 0; i < 9; i++) {
+      long a = get(i);
+      if (modPow(a, d, n) != 1) {
+        boolean composite = true;
+        for (long r = 0, p = 1; r < s; r++, p <<= 1) { // p = 2^r
+          if (modPow(a, p * d, n) == n - 1) {
+            composite = false;
+            break; // inconclusive
+          }
+        }
+        if (composite) return false;
       }
-    } while (prime <= number / prime); // i.e. if prime <= sqrt(number), p <= n/p
+    }
     return true;
   }
 
@@ -111,13 +166,14 @@ public class Primes implements Iterable<Long> {
 
     int i = 0;
     long prime;
+    long root = sqrt(number);
     do {
       prime = get(i++);
       while (number % prime == 0) {
         number /= prime;
         factors.add(prime);
       }
-    } while (prime <= number / prime); // i.e. if prime <= sqrt(number), p <= n/p
+    } while (prime <= root);
     if (number > 1L) {
       factors.add(number);
     }
@@ -210,13 +266,23 @@ public class Primes implements Iterable<Long> {
   }
 
   public static void main(String[] args) {
+    {
+      Primes primes = Primes.getInstance();
+      for (long number : Lists.newArrayList(105L, 10053L, 1005415L, 10054033243L)) {
+        System.out.println(number + " is " + (primes.isPrime(number) ? "prime!" : "composite!"));
+      }
+      for (long number : Lists.newArrayList(997L, 40487L, 53471161L, 1645333507L, 188748146801L)) { // fails on last one
+        System.out.println(number + " is " + (primes.isPrime(number) ? "prime!" : "composite!"));
+      }
+    }
+
     for (int limit : Lists.newArrayList(10, 20, 30, 15)) {
       Primes primes = Primes.getInstance();
       int i = 0;
       for (long prime : primes) {
         System.out.print(prime + " ");
         if (i++ == limit) {
-          System.out.println("");
+          System.out.println();
           break;
         }
       }
