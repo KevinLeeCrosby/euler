@@ -55,7 +55,7 @@ public class P060 {
 
   public static void main(String[] args) {
     size = args.length > 0 ? Integer.parseInt(args[0]) : 5;
-    P.generate(100000000L);
+    P.generate(10007L);
 
     for (long prime : P) {
       if (prime > 10000) break;
