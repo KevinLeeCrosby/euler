@@ -123,7 +123,7 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
    * composites and primes up to 341,550,071,728,321 using the first 9 prime numbers.
    *
    * @param n Number to be tested.
-   * @return
+   * @return True only if prime.
    */
   public boolean isPrime(final BigInteger n) { // TODO:  add pseudoprime checks above LIMIT???
     if (n.compareTo(LIMIT) == 1) System.err.println("WARNING!  Primality check not guaranteed for number " + n);
