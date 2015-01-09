@@ -1,16 +1,16 @@
 package net.euler;
 
 import com.google.common.collect.ImmutableMap;
-import jlibs.core.lang.Ansi;
-import jlibs.core.lang.Ansi.Color;
+//import jlibs.core.lang.Ansi;
+//import jlibs.core.lang.Ansi.Color;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.Map;
 
-import static jlibs.core.lang.Ansi.Attribute.*;
-import static jlibs.core.lang.Ansi.Color.BLACK;
-import static jlibs.core.lang.Ansi.Color.RED;
-import static jlibs.core.lang.Ansi.Color.WHITE;
+//import static jlibs.core.lang.Ansi.Attribute.*;
+//import static jlibs.core.lang.Ansi.Color.BLACK;
+//import static jlibs.core.lang.Ansi.Color.RED;
+//import static jlibs.core.lang.Ansi.Color.WHITE;
 
 /**
  * Playing card class.
@@ -122,10 +122,11 @@ public class Card implements Comparable<Card> {
   }
 
   public String toString() {
-    Color color = (suit == '♥' || suit == '♦') ? color = RED : BLACK;
+    //Color color = (suit == '♥' || suit == '♦') ? color = RED : BLACK;
 
-    Ansi ansi = new Ansi(NORMAL, color, WHITE);
+    //Ansi ansi = new Ansi(NORMAL, color, WHITE);
 
-    return ansi.colorize("" + rank + suit);
+    //return ansi.colorize("" + rank + suit);
+    return "" + rank + suit;
   }
 }
