@@ -32,7 +32,7 @@ public class P062 {
   }
 
   public static void main(String[] args) {
-    int size = args.length > 0 ? Integer.parseInt(args[0]) : 5;
+    final int size = args.length > 0 ? Integer.parseInt(args[0]) : 5;
 
     primes.generate(31);  // ensure 10 primes for hashing
 
