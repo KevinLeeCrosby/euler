@@ -1,16 +1,9 @@
 package net.euler;
 
 import com.google.common.collect.ImmutableMap;
-//import jlibs.core.lang.Ansi;
-//import jlibs.core.lang.Ansi.Color;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.Map;
-
-//import static jlibs.core.lang.Ansi.Attribute.*;
-//import static jlibs.core.lang.Ansi.Color.BLACK;
-//import static jlibs.core.lang.Ansi.Color.RED;
-//import static jlibs.core.lang.Ansi.Color.WHITE;
 
 /**
  * Playing card class.
@@ -18,6 +11,11 @@ import java.util.Map;
  * @author Kevin Crosby
  */
 public class Card implements Comparable<Card> {
+  public static final String BLACK = "\033[30m";
+  public static final String RED = "\033[31m";
+  public static final String WHITE_BG = "\033[107m";
+  public static final String RESET = "\033[0m";
+
   private static final String RANKS = "23456789⒑JQKA";
   private static final Map<Character, Character> RANK_MAP = ImmutableMap.of('T', '⒑');
 
@@ -122,11 +120,8 @@ public class Card implements Comparable<Card> {
   }
 
   public String toString() {
-    //Color color = (suit == '♥' || suit == '♦') ? color = RED : BLACK;
+    String color = (suit == '♥' || suit == '♦') ? RED : BLACK;
 
-    //Ansi ansi = new Ansi(NORMAL, color, WHITE);
-
-    //return ansi.colorize("" + rank + suit);
-    return "" + rank + suit;
+    return color + WHITE_BG + rank + suit + RESET;
   }
 }
