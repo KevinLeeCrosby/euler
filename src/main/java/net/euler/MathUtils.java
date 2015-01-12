@@ -15,6 +15,7 @@ import static java.math.BigInteger.*;
  */
 public class MathUtils {
   private static final BigInteger TWO = valueOf(2L);
+  private static final Long LONG_ROOT = sqrt(Long.MAX_VALUE);
 
   /**
    * Long/Integer common logarithm.
@@ -103,7 +104,7 @@ public class MathUtils {
    */
   public static Long modPow(long base, long exponent, long modulus) {
     // use BigInteger method if in danger of overflow
-    if (modulus - 1 > sqrt(Long.MAX_VALUE)) {
+    if (modulus - 1 > LONG_ROOT) {
       BigInteger product = BigInteger.valueOf(base).modPow(BigInteger.valueOf(exponent), BigInteger.valueOf(modulus));
       return product.longValue();
     }
