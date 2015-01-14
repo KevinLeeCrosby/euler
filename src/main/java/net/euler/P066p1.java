@@ -1,11 +1,5 @@
 package net.euler;
 
-import org.apache.commons.lang3.tuple.Pair;
-
-import java.math.BigInteger;
-
-import static java.math.BigInteger.ONE;
-import static java.math.BigInteger.ZERO;
 import static net.euler.MathUtils.sqrt;
 
 /**
@@ -31,54 +25,44 @@ import static net.euler.MathUtils.sqrt;
  *
  * @author Kevin Crosby
  */
-public class P066 {
+public class P066p1 {
   private static final Primes primes = Primes.getInstance();
 
-  private static Pair<BigInteger, BigInteger> getFundamentalSolution(final long n) {
+  // algorithm adapted from http://en.wikipedia.org/wiki/Methods_of_computing_square_roots#Continued_fraction_expansion
+  private static long period(final long n) {
     long a0 = sqrt(n);
+    long period = 0;
     if (a0 * a0 == n) {
-      return null;  // i.e. is a square
+      return period;  // i.e. is a square
     }
     long a = a0, m = 0, d = 1;
-    BigInteger hm1 = ONE, hm2 = ZERO, h; // numerators
-    BigInteger km1 = ZERO, km2 = ONE, k; // denominators
-    do {
-      h = BigInteger.valueOf(a).multiply(hm1).add(hm2);
-      k = BigInteger.valueOf(a).multiply(km1).add(km2);
-      //System.out.println(h + ((k.compareTo(ONE) == 0) ? "" : " / " + k) + "     " + a + ":  (" + m + "," + d + ")");
+    while (a != 2 * a0) {
       m = a * d - m;
       d = (n - m * m) / d;
       a = (a0 + m) / d;
-      hm2 = hm1;
-      hm1 = h;
-      km2 = km1;
-      km1 = k;
-    } while (h.pow(2).subtract(BigInteger.valueOf(n).multiply(k.pow(2))).compareTo(ONE) != 0);
-    return Pair.of(h, k);
+      period++;
+    }
+    return period;
   }
 
   public static void main(String[] args) {
     final int limit = args.length > 0 ? Integer.parseInt(args[0]) : 1000;
     primes.generate(limit);
 
-    BigInteger maxX = ZERO, bestY = ZERO;
+    long maxPeriod = 0;
     long bestD = 0;
     for (long d : primes) {
       if (d > limit) { break; }
-      long r = MathUtils.sqrt(d);
-      if (r * r == d) { continue; } // skip squares
-      Pair<BigInteger, BigInteger> pair = getFundamentalSolution(d);
-      BigInteger x = pair.getLeft(), y = pair.getRight();
-      System.out.println(x + "^2 – " + d + "×" + y + "^2 = 1");
-      if (maxX.compareTo(x) == -1) {
-        maxX = x;
-        bestY = y;
+      long period = period(d);
+      if (period % 2 == 1) {
+        period *= 2;
+      }
+      if (maxPeriod <= period) {
+        maxPeriod = period;
         bestD = d;
       }
     }
-    System.out.println();
 
     System.out.println("The value of D ≤ " + limit + " in minimal solutions of x for which the largest value of x is obtained is " + bestD);
-    System.out.println(maxX + "^2 – " + bestD + "×" + bestY + "^2 = 1");
   }
 }
