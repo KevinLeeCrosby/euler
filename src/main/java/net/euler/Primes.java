@@ -49,6 +49,7 @@ public class Primes implements Iterable<Long> {
    * @param limit Number to generate primes up to.
    */
   public void generate(final long limit) { // TODO:  implement more optimized Sieve of Eratosthenes
+    assert limit > 0 : "Limit must be positive!";
     int noPrimes = primes.size();
     long maxPrime = noPrimes > 0 ? primes.get(noPrimes - 1) : 0L;
     if (limit < maxPrime) return;
@@ -67,7 +68,7 @@ public class Primes implements Iterable<Long> {
   }
 
   public long get(final int index) {
-    assert index >= 0 : "Index must be positive!";
+    assert index >= 0 : "Index must be non-negative!";
     if (index >= primes.size()) {
       synchronized (this) {
         if (index >= primes.size()) {
@@ -86,6 +87,7 @@ public class Primes implements Iterable<Long> {
   }
 
   private boolean contains(final long number) { // uses prime counting function for faster lookups
+    assert number > 0 : "Number must be positive!";
     int maxIndex = primes.size() - 1;
     if (number > primes.get(maxIndex)) return false;
 
@@ -152,6 +154,7 @@ public class Primes implements Iterable<Long> {
   }
 
   public long degree(final long power) {
+    assert power > 0 : "Number must be positive!";
     List<Long> factors = factor(power);
     long degree = 0;
     for (long factor : Sets.newHashSet(factors)) {
@@ -257,6 +260,7 @@ public class Primes implements Iterable<Long> {
    * @return Euler's totient.
    */
   public long totient(final long number) {
+    assert number > 0 : "Number must be positive!";
     List<Long> factors = factor(number);
     long phi = number;
     for (long factor : Sets.newHashSet(factors)) {

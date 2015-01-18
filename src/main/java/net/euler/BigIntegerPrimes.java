@@ -63,6 +63,7 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
    * @param limit Number to generate primes up to.
    */
   public void generate(final BigInteger limit) { // TODO:  implement more optimized Sieve of Eratosthenes
+    assert limit.compareTo(ZERO) ==  1 : "Limit must be positive!";
     int noPrimes = primes.size();
     BigInteger maxPrime = noPrimes > 0 ? primes.get(noPrimes - 1) : ZERO;
     if (limit.compareTo(maxPrime) == -1) return; // i.e. if limit < maxPrime
@@ -84,7 +85,7 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
   }
 
   public BigInteger get(final int index) {
-    assert index >= 0 : "Index must be positive!";
+    assert index >= 0 : "Index must be non-negative!";
     if (index >= primes.size()) {
       synchronized (this) {
         if (index >= primes.size()) {
@@ -103,6 +104,7 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
   }
 
   private boolean contains(final BigInteger number) { // uses prime counting function for faster lookups
+    assert number.compareTo(ZERO) ==  1 : "Number must be positive!";
     int maxIndex = primes.size() - 1;
     if (number.compareTo(primes.get(maxIndex)) == 1) return false;
 
@@ -171,6 +173,7 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
   }
 
   public Long degree(final BigInteger power) {
+    assert power.compareTo(ZERO) ==  1 : "Number must be positive!";
     List<BigInteger> factors = factor(power);
     long degree = 0;
     for (BigInteger factor : Sets.newHashSet(factors)) {
@@ -277,6 +280,7 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
    * @return Euler's totient.
    */
   public BigInteger totient(final BigInteger number) {
+    assert number.compareTo(ZERO) ==  1 : "Number must be positive!";
     List<BigInteger> factors = factor(number);
     BigInteger phi = number;
     for (BigInteger factor : Sets.newHashSet(factors)) {
