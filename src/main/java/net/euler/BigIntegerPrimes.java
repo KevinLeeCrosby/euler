@@ -62,7 +62,7 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
    *
    * @param limit Number to generate primes up to.
    */
-  public void generate(final BigInteger limit) { // slightly improved Sieve of Eratosthenes
+  public void generate(final BigInteger limit) { // TODO:  implement more optimized Sieve of Eratosthenes
     int noPrimes = primes.size();
     BigInteger maxPrime = noPrimes > 0 ? primes.get(noPrimes - 1) : ZERO;
     if (limit.compareTo(maxPrime) == -1) return; // i.e. if limit < maxPrime
@@ -77,7 +77,7 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
         for (BigInteger multiple = THREE.multiply(odd); multiple.compareTo(limit) < 1;
              multiple = multiple.add(TWO.multiply(odd))) {
           setBit += odd.intValue();
-          sieve = sieve.setBit(setBit); // i.e. set to composite
+          sieve = sieve.setBit(setBit); // i.e. set to composite   // TODO: find formula or algorithm that does not depend on integer index
         }
       }
     }
@@ -203,7 +203,7 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
     return factors;
   }
 
-  public List<BigInteger> divisors(BigInteger number) {
+  public List<BigInteger> divisors(final BigInteger number) {
     // factor number
     List<BigInteger> factors = factor(number);
     if (factors.isEmpty()) {
@@ -235,7 +235,7 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
     return divisors;
   }
 
-  public BigInteger countDivisors(BigInteger number) { // Highly composite number formula
+  public BigInteger countDivisors(final BigInteger number) { // Highly composite number formula
     if (number.compareTo(ONE) == -1) {
       return ZERO;
     }
@@ -248,7 +248,7 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
     return count;
   }
 
-  public BigInteger sumDivisors(BigInteger number) {
+  public BigInteger sumDivisors(final BigInteger number) {
     if (number.compareTo(ONE) == -1) {
       return ZERO;
     }
@@ -263,10 +263,27 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
     return sum;
   }
 
-  public BigInteger aliquotSum(BigInteger number) { // a.k.a. sum proper divisors
+  public BigInteger aliquotSum(final BigInteger number) { // a.k.a. sum proper divisors
     return sumDivisors(number).subtract(number);  // make it proper
   }
 
+
+  /**
+   * Euler's totient or phi function, φ(n), is an arithmetic function that counts the totatives of n, that is, the
+   * positive integers less than or equal to n that are relatively prime to n. Thus, if n is a positive integer, then
+   * φ(n) is the number of integers k in the range 1 ≤ k ≤ n for which the greatest common divisor gcd(n, k) = 1.
+   *
+   * @param number Positive whole number to take totient of.
+   * @return Euler's totient.
+   */
+  public BigInteger totient(final BigInteger number) {
+    List<BigInteger> factors = factor(number);
+    BigInteger phi = number;
+    for (BigInteger factor : Sets.newHashSet(factors)) {
+      phi = phi.divide(factor).multiply(factor.subtract(ONE));
+    }
+    return phi;
+  }
 
   private class BigIntegerPrimeIterator implements Iterator<BigInteger> {
     private int index;

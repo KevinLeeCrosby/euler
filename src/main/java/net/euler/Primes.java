@@ -3,7 +3,10 @@ package net.euler;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-import java.util.*;
+import java.util.BitSet;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 import static net.euler.MathUtils.*;
 
@@ -58,7 +61,7 @@ public class Primes implements Iterable<Long> {
       int setBit = bit;
       for (long multiple = 3L * odd; multiple <= limit; multiple += 2L * odd) {
         setBit += odd.intValue();
-        sieve.set(setBit); // set to composite
+        sieve.set(setBit); // set to composite  // TODO: find formula or algorithm that does not depend on integer index
       }
     }
   }
@@ -181,7 +184,7 @@ public class Primes implements Iterable<Long> {
     return factors;
   }
 
-  public List<Long> divisors(long number) {
+  public List<Long> divisors(final long number) {
     // factor number
     List<Long> factors = factor(number);
     if (factors.isEmpty()) {
@@ -213,7 +216,7 @@ public class Primes implements Iterable<Long> {
     return divisors;
   }
 
-  public long countDivisors(long number) { // Highly composite number formula
+  public long countDivisors(final long number) { // Highly composite number formula
     if (number < 1L) {
       return 0L;
     }
@@ -226,13 +229,13 @@ public class Primes implements Iterable<Long> {
     return count;
   }
 
-  public long sumDivisors(long number) {
+  public long sumDivisors(final long number) {
     if (number < 1L) {
       return 0L;
     }
     long sum = 1;
     List<Long> factors = factor(number);
-    for (Long factor : Sets.newHashSet(factors)) {
+    for (long factor : Sets.newHashSet(factors)) {
       int exponent = Collections.frequency(factors, factor);
       long numerator = pow(factor, exponent + 1) - 1;
       long denominator = factor - 1;
@@ -241,9 +244,27 @@ public class Primes implements Iterable<Long> {
     return sum;
   }
 
-  public long aliquotSum(long number) { // a.k.a. sum proper divisors
+  public long aliquotSum(final long number) { // a.k.a. sum proper divisors
     return sumDivisors(number) - number; // make it proper
   }
+
+  /**
+   * Euler's totient or phi function, φ(n), is an arithmetic function that counts the totatives of n, that is, the
+   * positive integers less than or equal to n that are relatively prime to n. Thus, if n is a positive integer, then
+   * φ(n) is the number of integers k in the range 1 ≤ k ≤ n for which the greatest common divisor gcd(n, k) = 1.
+   *
+   * @param number Positive whole number to take totient of.
+   * @return Euler's totient.
+   */
+  public long totient(final long number) {
+    List<Long> factors = factor(number);
+    long phi = number;
+    for (long factor : Sets.newHashSet(factors)) {
+      phi = phi / factor * (factor - 1);
+    }
+    return phi;
+  }
+
 
   private class PrimeIterator implements Iterator<Long> {
     private int index;
@@ -264,8 +285,6 @@ public class Primes implements Iterable<Long> {
       throw new UnsupportedOperationException();
     }
   }
-
-
 
   public static void main(String[] args) {
     {
