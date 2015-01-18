@@ -34,7 +34,7 @@ import static net.euler.MathUtils.sqrt;
  */
 public class P064 {
   // algorithm adapted from http://en.wikipedia.org/wiki/Methods_of_computing_square_roots#Continued_fraction_expansion
-  private static int period(final int n) {
+  private static int period(final long n) {
     long a0 = sqrt(n);
     int period = 0;
     if (a0 * a0 == n) return period;  // i.e. is a square
@@ -48,7 +48,7 @@ public class P064 {
     return period;
   }
 
-  private static boolean isOddPeriod(final int n) {
+  private static boolean isOddPeriod(final long n) {
     return period(n) % 2 == 1;
   }
 
@@ -56,8 +56,8 @@ public class P064 {
     final int LIMIT = args.length > 0 ? Integer.parseInt(args[0]) : 10000;
 
     int count = 0;
-    for (int n = 1; n <= LIMIT; n++) {
-      int a0 = sqrt(n).intValue();
+    for (long n = 1; n <= LIMIT; n++) {
+      long a0 = sqrt(n);
       if (a0 * a0 == n) { continue; }
       System.out.println("√" + n + " has period " + period(n));
       if (isOddPeriod(n)) { count++; }

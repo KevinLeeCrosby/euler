@@ -15,7 +15,7 @@ import static java.math.BigInteger.*;
  */
 public class MathUtils {
   private static final BigInteger TWO = valueOf(2L);
-  private static final Long LONG_ROOT = sqrt(Long.MAX_VALUE);
+  private static final long LONG_ROOT = sqrt(Long.MAX_VALUE);
 
   /**
    * Long/Integer common logarithm.
@@ -23,7 +23,7 @@ public class MathUtils {
    * @param antilogarithm Antilogarithm to take common logarithm of.
    * @return Discrete common logarithm.
    */
-  public static Long log10(final long antilogarithm) {
+  public static long log10(final long antilogarithm) {
     long mantissa = 0;
     long n = antilogarithm / 10;
     while (n > 0) {
@@ -55,7 +55,7 @@ public class MathUtils {
    * @param antilogarithm Antilogarithm to take log2 of.
    * @return Discrete logarithm base 2.
    */
-  public static Long log2(final long antilogarithm) {
+  public static long log2(final long antilogarithm) {
     return 63L - Long.numberOfLeadingZeros(antilogarithm);
   }
 
@@ -82,7 +82,7 @@ public class MathUtils {
    * @param exponent Exponent to raise base to.
    * @return Base raised to the exponent power.
    */
-  public static Long pow(long base, long exponent) {
+  public static long pow(long base, long exponent) {
     long product = 1;
     while (exponent > 0) {
       if (exponent % 2 == 1) { // i.e. if odd
@@ -102,7 +102,7 @@ public class MathUtils {
    * @param modulus  Modulus to apply to power.
    * @return Base raised to the exponent power.
    */
-  public static Long modPow(long base, long exponent, long modulus) {
+  public static long modPow(long base, long exponent, long modulus) {
     // use BigInteger method if in danger of overflow
     if (modulus - 1 > LONG_ROOT) {
       BigInteger product = BigInteger.valueOf(base).modPow(BigInteger.valueOf(exponent), BigInteger.valueOf(modulus));
@@ -128,7 +128,7 @@ public class MathUtils {
    * @param radicand Number to take square root of.
    * @return Long/Integer square root of number.
    */
-  public static Long sqrt(final long radicand) {
+  public static long sqrt(final long radicand) {
     long x = pow(2, log2(radicand) / 2 + 1);
     long y = (x + radicand / x) / 2;
     while (y < x) {
@@ -171,7 +171,7 @@ public class MathUtils {
    * @param b Second number.
    * @return GCD of numbers.
    */
-  public static Long gcd(final long a, final long b) {
+  public static long gcd(final long a, final long b) {
     return b == 0 ? a : gcd(b, a % b);
   }
 
@@ -181,7 +181,7 @@ public class MathUtils {
    * @param list List of numbers.
    * @return GCD of numbers.
    */
-  public static Long gcd(List<Long> list) {
+  public static long gcd(List<Long> list) {
     long gcd = list.get(0);
     for (int i = 1; i < list.size(); i++) {
       gcd = gcd(gcd, list.get(i));
@@ -195,7 +195,7 @@ public class MathUtils {
    * @param list List of numbers.
    * @return GCD of numbers.
    */
-  public static Long gcd(Long... list) {
+  public static long gcd(Long... list) {
     return gcd(Lists.newArrayList(list));
   }
 
@@ -206,7 +206,7 @@ public class MathUtils {
    * @param list List of numbers.
    * @return GCD of numbers.
    */
-  public static Long gcd(Integer... list) {
+  public static long gcd(Integer... list) {
     return gcd(Lists.transform(Lists.newArrayList(list), intToLong()));
   }
 
@@ -217,7 +217,7 @@ public class MathUtils {
    * @param b Second number.
    * @return LCM of numbers.
    */
-  public static Long lcm(final long a, final long b) {
+  public static long lcm(final long a, final long b) {
     return a * b / gcd(a, b);
   }
 
@@ -227,7 +227,7 @@ public class MathUtils {
    * @param list List of numbers.
    * @return LCM of numbers.
    */
-  public static Long lcm(List<Long> list) {
+  public static long lcm(List<Long> list) {
     long lcm = list.get(0);
     for (int i = 1; i < list.size(); i++) {
       lcm = lcm(lcm, list.get(i));
@@ -241,7 +241,7 @@ public class MathUtils {
    * @param list List of numbers.
    * @return LCM of numbers.
    */
-  public static Long lcm(Long... list) {
+  public static long lcm(Long... list) {
     return lcm(Lists.newArrayList(list));
   }
 
@@ -251,7 +251,7 @@ public class MathUtils {
    * @param list List of numbers.
    * @return LCM of numbers.
    */
-  public static Long lcm(Integer... list) {
+  public static long lcm(Integer... list) {
     return lcm(Lists.transform(Lists.newArrayList(list), intToLong()));
   }
 }

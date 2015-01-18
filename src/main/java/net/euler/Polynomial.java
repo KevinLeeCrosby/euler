@@ -55,7 +55,7 @@ public class Polynomial {
     return coefficients.size();
   }
 
-  public Long get(final int index) {
+  public long get(final int index) {
     return index < size() ? coefficients.get(index) : 0L;
   }
 

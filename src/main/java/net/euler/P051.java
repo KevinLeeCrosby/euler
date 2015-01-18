@@ -16,9 +16,9 @@ import static org.apache.commons.math3.util.CombinatoricsUtils.binomialCoefficie
 
 /**
  * By replacing the 1st digit of the 2-digit number *3, it turns out that six of the nine possible values: 13, 23, 43, 53, 73, and 83, are all prime.
- * <p/>
+ *
  * By replacing the 3rd and 4th digits of 56**3 with the same digit, this 5-digit number is the first example having seven primes among the ten generated numbers, yielding the family: 56003, 56113, 56333, 56443, 56663, 56773, and 56993. Consequently 56003, being the first member of this family, is the smallest prime with this property.
- * <p/>
+ *
  * Find the smallest prime which, by replacing part of the number (not necessarily adjacent digits) with the same digit, is part of an eight prime value family.
  *
  * @author Kevin Crosby
@@ -73,7 +73,7 @@ public class P051 {
     while (value > 0) {
       int index = Integer.numberOfTrailingZeros(value);
       indices.add(index);
-      value -= pow(2, index).intValue();
+      value -= Long.valueOf(pow(2, index)).intValue();
     }
     return indices;
   }
@@ -87,7 +87,7 @@ public class P051 {
    */
   private static List<List<Integer>> getListOfIndices(int noDigits, int noReplacements) {
     List<List<Integer>> listsOfIndices = Lists.newArrayList();
-    Integer permutation = pow(2, noReplacements).intValue() - 1; // initialize using inverted logic
+    int permutation = Long.valueOf(pow(2, noReplacements)).intValue() - 1; // initialize using inverted logic
     for (int i = 0; i < binomialCoefficient(noDigits - 1, noReplacements); i++) {
       List<Integer> indices = getIndices(permutation << 1); // do not replace last digit
       listsOfIndices.add(indices);
@@ -116,7 +116,7 @@ public class P051 {
     int noDigits = 1;
     List<Long> primeSet = Lists.newArrayList();
     for (Long prime : primes) {
-      int newDigits = log10(prime).intValue() + 1;
+      int newDigits = Long.valueOf(log10(prime)).intValue() + 1;
       if (newDigits > noDigits) {
         for (int noReplacements : possibleNoReplacements) {
           if (noDigits - 1 < noReplacements) break;

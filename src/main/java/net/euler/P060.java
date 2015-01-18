@@ -11,7 +11,7 @@ import static net.euler.MathUtils.pow;
  * The primes 3, 7, 109, and 673, are quite remarkable. By taking any two primes and concatenating them in any order
  * the result will always be prime. For example, taking 7 and 109, both 7109 and 1097 are prime. The sum of these
  * four primes, 792, represents the lowest sum for a set of four primes with this property.
- * <p/>
+ *
  * Find the lowest sum for a set of five primes for which any two primes concatenate to produce another prime.
  *
  * @author Kevin Crosby
@@ -22,7 +22,7 @@ public class P060 {
   private static int size;
 
   private static boolean isCatenatedPrimePair(final long prime1, final long prime2) {
-    int len1 = log10(prime1).intValue() + 1, len2 = log10(prime2).intValue() + 1;
+    long len1 = log10(prime1) + 1, len2 = log10(prime2) + 1;
     long cat1 = prime1 * pow(10, len2) + prime2, cat2 = prime2 * pow(10, len1) + prime1;
     return P.isPrime(cat1) && P.isPrime(cat2);
   }

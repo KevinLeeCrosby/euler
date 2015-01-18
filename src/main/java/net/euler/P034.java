@@ -55,7 +55,7 @@ public class P034 {
 
     int sum = 0;
     for (int length = 2; pow(base, length - 1) < length * maxFactorial; length++) {
-      for (int number = pow(base, length - 1).intValue(); number < pow(base, length); number++) {
+      for (int number = Long.valueOf(pow(base, length - 1)).intValue(); number < pow(base, length); number++) {
         if (isFactorion(number, base)) {
           sum += number;
         }

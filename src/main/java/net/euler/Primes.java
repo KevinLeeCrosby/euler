@@ -13,7 +13,7 @@ import static net.euler.MathUtils.*;
 public class Primes implements Iterable<Long> {
   private static Primes instance = null;
   private List<Long> primes;
-  private static final Long LIMIT = 341550071728321L;
+  private static final long LIMIT = 341550071728321L;
 
   private Primes() {
     primes = Lists.newArrayList(2L, 3L, 5L, 7L, 11L, 13L, 17L, 19L, 23L); // required for isPrime
@@ -63,7 +63,7 @@ public class Primes implements Iterable<Long> {
     }
   }
 
-  public Long get(final int index) {
+  public long get(final int index) {
     assert index >= 0 : "Index must be positive!";
     if (index >= primes.size()) {
       synchronized (this) {
@@ -148,7 +148,7 @@ public class Primes implements Iterable<Long> {
     return degree(number) > 1;
   }
 
-  public Long degree(final long power) {
+  public long degree(final long power) {
     List<Long> factors = factor(power);
     long degree = 0;
     for (long factor : Sets.newHashSet(factors)) {
@@ -213,20 +213,20 @@ public class Primes implements Iterable<Long> {
     return divisors;
   }
 
-  public Long countDivisors(long number) { // Highly composite number formula
+  public long countDivisors(long number) { // Highly composite number formula
     if (number < 1L) {
       return 0L;
     }
     long count = 1;
     List<Long> factors = factor(number);
-    for (Long factor : Sets.newHashSet(factors)) {
+    for (long factor : Sets.newHashSet(factors)) {
       int exponent = Collections.frequency(factors, factor);
       count *= exponent + 1;
     }
     return count;
   }
 
-  public Long sumDivisors(long number) {
+  public long sumDivisors(long number) {
     if (number < 1L) {
       return 0L;
     }
@@ -241,7 +241,7 @@ public class Primes implements Iterable<Long> {
     return sum;
   }
 
-  public Long aliquotSum(long number) { // a.k.a. sum proper divisors
+  public long aliquotSum(long number) { // a.k.a. sum proper divisors
     return sumDivisors(number) - number; // make it proper
   }
 
@@ -265,13 +265,15 @@ public class Primes implements Iterable<Long> {
     }
   }
 
+
+
   public static void main(String[] args) {
     {
       Primes primes = Primes.getInstance();
       for (long number : Lists.newArrayList(105L, 10053L, 1005415L, 10054033243L)) {
         System.out.println(number + " is " + (primes.isPrime(number) ? "prime!" : "composite!"));
       }
-      for (long number : Lists.newArrayList(997L, 40487L, 53471161L, 1645333507L, 188748146801L)) { // fails on last one
+      for (long number : Lists.newArrayList(997L, 40487L, 53471161L, 1645333507L, 188748146801L)) {
         System.out.println(number + " is " + (primes.isPrime(number) ? "prime!" : "composite!"));
       }
     }
