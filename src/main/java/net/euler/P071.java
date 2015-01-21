@@ -25,7 +25,7 @@ public class P071 {
     int k = (n + b) / d;
     int p = k * c - a, q = k * d - b; // i.e. new fraction p/q immediately to left of 3/7.
 
-    k = (n + p) / d;
+    k = (n + q) / d;
     a = k * c - p; // i.e. new fraction a/b immediately to right of 3/7.
     b = k * d - q;
 
