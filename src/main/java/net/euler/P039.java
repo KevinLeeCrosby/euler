@@ -20,8 +20,6 @@ import static net.euler.MathUtils.gcd;
  * @author Kevin Crosby
  */
 public class P039 {
-  private static Primes primes = Primes.getInstance();
-
   // generalized Euclid's formula
   private static Triple<Integer, Integer, Integer> triple(int k, int m, int n) {
     return Triple.of(k * (m * m - n * n), 2 * k * m * n, k * (m * m + n * n));
@@ -32,12 +30,7 @@ public class P039 {
   }
 
   public static void main(String[] args) {
-    int maxPerimeter;
-    if (args.length > 0) {
-      maxPerimeter = Integer.parseInt(args[0]);
-    } else {
-      maxPerimeter = 1000;
-    }
+    final int maxPerimeter = args.length > 0 ? Integer.parseInt(args[0]) : 1000;
 
     // generate all Pythagorean triples with perimeter up to max perimeter
     Multimap<Integer, Triple<Integer, Integer, Integer>> map = ArrayListMultimap.create();
@@ -45,24 +38,24 @@ public class P039 {
     for (int k = 1; k <= maxSemiPerimeter / 2; k++) { // k = 1 produces primitive Pythagorean triples (k = gcd(a, c))
       for (int m = 2; m < maxSemiPerimeter / k; m++) {
         for (int n = 1 + m % 2; n < m; n += 2) { // force m - n to be odd
-          int p = perimeter(k, m, n);
-          if (gcd(m, n) != 1 || p > maxPerimeter) {
+          int perimeter = perimeter(k, m, n);
+          if (gcd(m, n) != 1 || perimeter > maxPerimeter) {
             continue;
           }
-          map.put(p, triple(k, m, n));
+          map.put(perimeter, triple(k, m, n));
         }
       }
     }
 
     int maxSolutions = 0;
     int bestPerimeter = 0;
-    for (int p : Sets.newTreeSet(map.keySet())) {
-      Set<Triple<Integer, Integer, Integer>> triples = Sets.newTreeSet(map.get(p));
+    for (int perimeter : Sets.newTreeSet(map.keySet())) {
+      Set<Triple<Integer, Integer, Integer>> triples = Sets.newTreeSet(map.get(perimeter));
       if (triples.size() > maxSolutions) {
         maxSolutions = triples.size();
-        bestPerimeter = p;
+        bestPerimeter = perimeter;
       }
-      System.out.println(p + ": " + Sets.newTreeSet(map.get(p)));
+      System.out.println(perimeter + ": " + Sets.newTreeSet(map.get(perimeter)));
     }
     System.out.println();
     System.out.println("The best value of p ≤ " + maxPerimeter + ", is " + bestPerimeter + ", where the number of solutions maximised (" + maxSolutions + ").");
