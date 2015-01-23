@@ -20,11 +20,12 @@ import java.util.Map;
 public class P076 {
   private static Map<Long, Long> counts = new HashMap<Long, Long>() {{ put(0L, 1L); }};
 
-  // generalized pentagonal
+  // pentagonal numbers (A000326)
   private static long g(final long k) {
     return k * (3 * k - 1) / 2;
   }
 
+  // second pentagon numbers (A005449)
   private static long h(final long k) {
     return k * (3 * k + 1) / 2;
   }
