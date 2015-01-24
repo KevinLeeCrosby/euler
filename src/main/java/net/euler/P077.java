@@ -23,7 +23,6 @@ public class P077 {
   private static final Primes primes = Primes.getInstance();
 
   private static Map<Long, Long> counts = new HashMap<Long, Long>() {{ put(0L, 1L); }};
-
   private static Map<Long, Long> sumFactors = Maps.newHashMap();
 
   // sum of factors
@@ -60,7 +59,7 @@ public class P077 {
     while (p <= limit) {
       p = p(++n);
     }
-    System.out.println("The first value which can be written as the sum of primes in over " + limit + " ways is "
-        + n + " (" + p + ").");
+    System.out.println("The first value which can be written as the sum of primes in over " + limit +
+        " ways is p(" + n + ") = " + p);
   }
 }
