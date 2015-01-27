@@ -1,5 +1,8 @@
 package net.euler;
 
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,17 +20,18 @@ import java.util.Map;
  *
  * @author Kevin Crosby
  */
-public class P076 {
+public class P076p1 { // Alternative approach
+  private static final Primes primes = Primes.getInstance();
+
   private static Map<Long, Long> counts = new HashMap<Long, Long>() {{ put(0L, 1L); }};
+  private static Map<Long, Long> sumDivisors = Maps.newHashMap();
 
-  // pentagonal numbers (A000326)
-  private static long g(final long k) {
-    return k * (3 * k - 1) / 2;
-  }
-
-  // second pentagon numbers (A005449)
-  private static long h(final long k) {
-    return k * (3 * k + 1) / 2;
+  // sum of divisors
+  private static long sumDivisors(final long k) {
+    if (!sumDivisors.containsKey(k)) {
+      sumDivisors.put(k, primes.sumDivisors(k));
+    }
+    return sumDivisors.get(k);
   }
 
   // partition count
@@ -35,10 +39,10 @@ public class P076 {
     if (n < 0) { return 0; }
     if (!counts.containsKey(n)) {
       long count = 0;
-      for (long k = 1; k <= n; k++) {
-        count += (2 * (k % 2) - 1) * (p(n - g(k)) + p(n - h(k)));
+      for (long k = 0; k < n; k++) {
+        count += sumDivisors(n - k) * p(k);
       }
-      counts.put(n, count);
+      counts.put(n, count / n);
     }
     return counts.get(n);
   }
