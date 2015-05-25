@@ -75,7 +75,7 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
       if (!sieve.testBit(++bit)) { // i.e. if is prime
         primes.add(odd);
         int setBit = bit;
-        for (BigInteger multiple = THREE.multiply(odd); multiple.compareTo(limit) < 1;
+        for (BigInteger multiple = odd.multiply(odd); multiple.compareTo(limit) < 1;
              multiple = multiple.add(TWO.multiply(odd))) {
           setBit += odd.intValue();
           sieve = sieve.setBit(setBit); // i.e. set to composite   // TODO: find formula or algorithm that does not depend on integer index

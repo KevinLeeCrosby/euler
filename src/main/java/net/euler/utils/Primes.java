@@ -56,12 +56,13 @@ public class Primes implements Iterable<Long> {
 
     primes = Lists.newArrayList(2L); // start over, for now
     BitSet sieve = new BitSet(); // fill with false (inverted logic), for n >= 3;
-    for (int bit = sieve.nextClearBit(0); bit >= 0 && 2 * bit + 3 <= limit; bit = sieve.nextClearBit(bit + 1)) {
-      Long odd = 2L * bit + 3L;
-      primes.add(odd);
+    long prime = 3;
+    for (int bit = sieve.nextClearBit(0); bit >= 0 && prime <= limit / prime;
+         bit = sieve.nextClearBit(bit + 1), prime = (bit << 1) + 3) {
+      primes.add(prime);
       int setBit = bit;
-      for (long multiple = 3L * odd; multiple <= limit; multiple += 2L * odd) {
-        setBit += odd.intValue();
+      for (long multiple = prime * prime; multiple <= limit; multiple += 2L * prime) {
+        setBit += Long.valueOf(prime).intValue();
         sieve.set(setBit); // set to composite  // TODO: find formula or algorithm that does not depend on integer index
       }
     }

@@ -17,27 +17,27 @@ import static net.euler.utils.MathUtils.modPow;
  */
 public class NewPrimes implements Iterable<Long> {
   private static NewPrimes instance = null;
-  private static final int BASE = 30, BYTE = 8, BITS = 3;
+  private static BitSet sieve;
 
-  private static BitSet sieve; // TODO change to LongBitSet via http://java-performance.info/bit-sets/
-
-  // TODO:  generalize based on BASE
-  private static final BiMap<Integer, Integer> MODULII = new ImmutableBiMap.Builder<Integer, Integer>()
-      .put(0, 1).put(1, 7).put(2, 11).put(3, 13).put(4, 17).put(5, 19).put(6, 23).put(7, 29).build();  // base 30
+  private static final int BASE = 30;
+  private static int BITS;
+  private static List<Long> BASE_PRIMES;
+  private static BiMap<Integer, Integer> MODULI;
 
   private static final long LIMIT = 341550071728321L;
   private static final long BIT_LIMIT = 100000000L;
-  private static final long SIEVE_LIMIT = unpack(BIT_LIMIT);
+  private static long SIEVE_LIMIT;
 
   private NewPrimes() {
-    sieve = new BitSet((int)BIT_LIMIT); // all bits are initially false, let false = prime, true = composite
+    initialize();
+    sieve = new BitSet((int) BIT_LIMIT); // all bits are initially false, let false = prime, true = composite
     generate();
   }
 
   public static NewPrimes getInstance() {
-    if(instance == null) {
-      synchronized(NewPrimes.class) {
-        if(instance == null) {
+    if (instance == null) {
+      synchronized (NewPrimes.class) {
+        if (instance == null) {
           instance = new NewPrimes();
         }
       }
@@ -45,38 +45,69 @@ public class NewPrimes implements Iterable<Long> {
     return instance;
   }
 
+  private void initialize() {
+    ImmutableList.Builder<Long> basePrimes = new ImmutableList.Builder<>();
+    ImmutableBiMap.Builder<Integer, Integer> moduli = new ImmutableBiMap.Builder<>();
+    basePrimes.add(2L);
+
+    final int bitLimit = (BASE - 1) >> 1;
+    int lastBasePrime = 2;
+    BitSet modSieve = new BitSet(bitLimit); // fill with false (inverted logic), for n >= 3;
+    for (int primeBit = modSieve.nextClearBit(0), prime = 3, primorial = 6; primorial <= BASE;
+         primeBit = modSieve.nextClearBit(primeBit + 1), prime = (primeBit << 1) + 3, primorial *= prime) {
+      basePrimes.add((long) prime);
+      lastBasePrime = prime;
+      for (int compositeBit = primeBit + prime; compositeBit <= bitLimit; compositeBit += prime) {
+        modSieve.set(compositeBit); // set to composite
+      }
+    }
+
+    moduli.put(0, 1); // NOTE: moduli are not necessarily prime in all bases
+    for (int i = 1, modBit = modSieve.nextClearBit(lastBasePrime >> 1), modulus = (modBit << 1) + 3;
+         modBit < bitLimit;
+         ++i, modBit = modSieve.nextClearBit(modBit + 1), modulus = (modBit << 1) + 3) {
+      moduli.put(i, modulus);
+    }
+
+    BASE_PRIMES = basePrimes.build();
+    MODULI = moduli.build();
+    BITS = MODULI.size();
+    SIEVE_LIMIT = unpack(BIT_LIMIT);
+  }
+
   /**
-   * Black-Key Sieve (r30)
+   * Black-Key Sieve
    *
    * See:  http://www.qsl.net/w2gl/blackkey.html
    */
   private void generate() {
     sieve.set(0); // 1 is not a prime
     long prime = unpack(1);
-    for(int primeBit = sieve.nextClearBit(1); prime < SIEVE_LIMIT / prime; primeBit = sieve.nextClearBit(primeBit + 1), prime = unpack(primeBit)) {
+    for (int primeBit = sieve.nextClearBit(1); prime <= SIEVE_LIMIT / prime;
+         primeBit = sieve.nextClearBit(primeBit + 1), prime = unpack(primeBit)) {
       long ratio = Long.MAX_VALUE / prime;
       long multiplier = unpack(primeBit);
       long composite = prime * multiplier;
-      for(int i = 0, multiplierBit = primeBit; i < BYTE && multiplier <= ratio && composite < SIEVE_LIMIT;
-          ++i, multiplier = unpack(++multiplierBit), composite = prime * multiplier) { // prevent overflow
-        for(long compositeBit = pack(composite); compositeBit < BIT_LIMIT; compositeBit += BYTE * prime) {
+      for (int i = 0, multiplierBit = primeBit; i < BITS && multiplier <= ratio && composite < SIEVE_LIMIT;
+           ++i, multiplier = unpack(++multiplierBit), composite = prime * multiplier) { // prevent overflow
+        for (long compositeBit = pack(composite); compositeBit < BIT_LIMIT; compositeBit += BITS * prime) {
           sieve.set((int) compositeBit);
         }
       }
     }
   }
 
-  private static long unpack(final long bit) {
-    int mod = (int) (bit % BYTE);
-    long offset = bit / BYTE; // TODO replace with right shift operator?  long offset = bit >> BITS;
-    return BASE * offset + MODULII.get(mod); // number
+  private long unpack(final long bit) {
+    int mod = (int) (bit % BITS);
+    long offset = bit / BITS;
+    return BASE * offset + MODULI.get(mod); // number
   }
 
-  private static long pack(final long number) {
+  private long pack(final long number) {
     assert isCoprime(number, BASE) : "Number " + number + " is not coprime with base " + BASE;
     int invMod = (int) (number % BASE);
     long offset = number / BASE;
-    return BYTE * offset + MODULII.inverse().get(invMod); // bit // TODO replace with left shift operator?
+    return BITS * offset + MODULI.inverse().get(invMod); // bit
   }
 
   /**
@@ -88,9 +119,10 @@ public class NewPrimes implements Iterable<Long> {
    */
   public boolean isPrime(final long n) { // TODO:  add pseudoprime checks above LIMIT???
     if (n > LIMIT) System.err.println("WARNING!  Primality check not guaranteed for number " + n);
+    if (BASE_PRIMES.contains(n)) return true;
     if (n < 2 || !isCoprime(n, BASE)) return false;
-    //if (n < BASE) return true;
-    if (n < SIEVE_LIMIT) return !sieve.get((int)pack(n));
+    if (n <= 23) return true;
+    if (n < SIEVE_LIMIT) return !sieve.get((int) pack(n));
     long d = n - 1;
     int s = 0;
     while (d % 2 == 0) {
@@ -117,8 +149,8 @@ public class NewPrimes implements Iterable<Long> {
     return gcd(a, b) == 1;
   }
 
-  public static long getLargestStoredPrime() {
-    int bit = sieve.previousClearBit((int)BIT_LIMIT - 1);
+  public long getLargestStoredPrime() {
+    int bit = sieve.previousClearBit((int) BIT_LIMIT - 1);
     return unpack(bit);
   }
 
@@ -127,10 +159,9 @@ public class NewPrimes implements Iterable<Long> {
     return new NewPrimeIterator();
   }
 
-  private static class NewPrimeIterator implements Iterator<Long> {
+  private class NewPrimeIterator implements Iterator<Long> {
     private long bit;
     private int baseCount;
-    private final List<Long> basePrimes = ImmutableList.of(2L, 3L, 5L); // TODO replace with factor of BASE?
 
     public NewPrimeIterator() {
       bit = 1;
@@ -143,8 +174,8 @@ public class NewPrimes implements Iterable<Long> {
 
     public Long next() {
       long prime;
-      if(baseCount < basePrimes.size()) {
-        prime = basePrimes.get(baseCount++);
+      if (baseCount < BASE_PRIMES.size()) {
+        prime = BASE_PRIMES.get(baseCount++);
       } else {
         prime = unpack(bit);
         bit = sieve.nextClearBit((int) bit + 1);
@@ -160,21 +191,21 @@ public class NewPrimes implements Iterable<Long> {
   public static void main(String[] args) {
     {
       NewPrimes primes = NewPrimes.getInstance();
-      for(long number : Lists.newArrayList(105L, 10053L, 1005415L, 10054033243L)) {
+      for (long number : Lists.newArrayList(105L, 10053L, 1005415L, 10054033243L)) {
         System.out.println(number + " is " + (primes.isPrime(number) ? "prime!" : "composite!"));
       }
-      for(long number : Lists.newArrayList(997L, 40487L, 53471161L, 1645333507L, 188748146801L)) {
+      for (long number : Lists.newArrayList(997L, 40487L, 53471161L, 1645333507L, 188748146801L)) {
         System.out.println(number + " is " + (primes.isPrime(number) ? "prime!" : "composite!"));
       }
     }
 
-    for(int limit : Lists.newArrayList(10, 20, 30, 15)) {
+    for (int limit : Lists.newArrayList(10, 20, 30, 15)) {
       //    for(int limit : Lists.newArrayList(1000)) {
       NewPrimes primes = NewPrimes.getInstance();
       int i = 1;
-      for(long prime : primes) {
+      for (long prime : primes) {
         System.out.print(prime + " ");
-        if(i++ == limit) {
+        if (i++ == limit) {
           System.out.println();
           break;
         }
@@ -183,15 +214,18 @@ public class NewPrimes implements Iterable<Long> {
 
     NewPrimes primes = NewPrimes.getInstance();
     int i = 1;
-    for(long prime : primes) {
+    for (long prime : primes) {
+      if (!primes.isPrime(prime)) {
+        System.err.println(prime + " is NOT prime!");
+      }
       System.out.print(prime + " ");
-      if(i++ % 10 == 0) {
+      if (i++ % 10 == 0) {
         System.out.println();
       }
     }
 
 
     System.out.println();
-    System.out.println("Largest prime stored is " + getLargestStoredPrime());
+    System.out.println("Largest prime stored is " + primes.getLargestStoredPrime());
   }
 }
