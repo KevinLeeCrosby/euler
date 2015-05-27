@@ -88,7 +88,7 @@ public class MathUtils {
       if (exponent % 2 == 1) { // i.e. if odd
         product *= base;
       }
-      exponent >>= 1;
+      exponent >>>= 1;
       base *= base;
     }
     return product;
@@ -116,7 +116,7 @@ public class MathUtils {
       if (exponent % 2 == 1) { // i.e. if odd
         product = (product * base) % modulus;
       }
-      exponent >>= 1;
+      exponent >>>= 1;
       base = (base * base) % modulus;
     }
     return product;
@@ -129,11 +129,11 @@ public class MathUtils {
    * @return Long/Integer square root of number.
    */
   public static long sqrt(final long radicand) {
-    long x = pow(2, log2(radicand) / 2 + 1);
-    long y = (x + radicand / x) / 2;
+    long x = pow(2, (log2(radicand) >>> 1) + 1);
+    long y = (x + radicand / x) >>> 1;
     while (y < x) {
       x = y;
-      y = (x + radicand / x) / 2;
+      y = (x + radicand / x) >>> 1;
     }
     return x;
   }
