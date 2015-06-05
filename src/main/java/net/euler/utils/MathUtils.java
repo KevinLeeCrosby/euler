@@ -83,9 +83,10 @@ public class MathUtils {
    * @return Base raised to the exponent power.
    */
   public static long pow(long base, long exponent) {
+    if (exponent < 0) return 0;
     long product = 1;
     while (exponent > 0) {
-      if (exponent % 2 == 1) { // i.e. if odd
+      if ((exponent & 1) != 0) { // i.e. if odd
         product *= base;
       }
       exponent >>>= 1;
@@ -113,7 +114,7 @@ public class MathUtils {
     long product = 1;
     base = base % modulus;
     while (exponent > 0) {
-      if (exponent % 2 == 1) { // i.e. if odd
+      if ((exponent & 1) != 0) { // i.e. if odd
         product = (product * base) % modulus;
       }
       exponent >>>= 1;
