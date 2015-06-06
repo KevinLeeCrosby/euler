@@ -17,7 +17,7 @@ public class Counter<T> {
    *
    * @param key Key to increment.
    */
-  public void increment(T key) {
+  public void increment(final T key) {
     increment(key, 1);
   }
 
@@ -27,7 +27,7 @@ public class Counter<T> {
    * @param key       Key to increment.
    * @param increment Amount to increment.
    */
-  public void increment(T key, int increment) {
+  public void increment(final T key, final int increment) {
     int value = (map.containsKey(key) ? map.get(key) : 0) + increment;
     if (value == 0) {
       map.remove(key);
@@ -51,7 +51,7 @@ public class Counter<T> {
    * @param key       Key to decrement.
    * @param decrement Amount to decrement.
    */
-  public void decrement(T key, int decrement) {
+  public void decrement(final T key, final int decrement) {
     increment(key, -decrement);
   }
 
@@ -61,7 +61,7 @@ public class Counter<T> {
    * @param key Key to get count of.
    * @return Count of key.
    */
-  public int getCount(T key) {
+  public int getCount(final T key) {
     return map.containsKey(key) ? map.get(key) : 0;
   }
 
@@ -98,7 +98,16 @@ public class Counter<T> {
    * Descending sort by count.
    */
   public List<Entry<T, Integer>> descendingSortByCount() {
-    return Lists.reverse(ascendingSortByCount());
+    List<Entry<T, Integer>> entries = Lists.newArrayList(map.entrySet());
+
+    Collections.sort(entries, new Comparator<Entry<T, Integer>>() {
+      @Override
+      public int compare(Entry<T, Integer> entry1, Entry<T, Integer> entry2) {
+        return entry2.getValue() - entry1.getValue();
+      }
+    });
+
+    return entries;
   }
 
   /**
@@ -109,7 +118,7 @@ public class Counter<T> {
   public String toString() {
     final StringBuilder sb = new StringBuilder();
     for (Entry<T, Integer> entry : ascendingSortByCount()) {
-      sb.append(entry.getKey() + " : " + entry.getValue() + "\n");
+      sb.append(entry.getKey()).append(" : ").append(entry.getValue()).append("\n");
     }
     return sb.toString();
   }
