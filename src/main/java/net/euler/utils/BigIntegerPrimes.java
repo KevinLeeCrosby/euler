@@ -165,7 +165,7 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
   }
 
   public boolean isPerfectPowerOf(final BigInteger number, final long degree) {
-    return degree > 1 && degree(number) == degree;
+    return degree > 1 && degree(number) % degree == 0;
   }
 
   public boolean isPerfectPower(final BigInteger number) {

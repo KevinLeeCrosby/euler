@@ -147,7 +147,7 @@ public class Primes implements Iterable<Long> {
   }
 
   public boolean isPerfectPowerOf(final long number, final long degree) {
-    return degree > 1 && degree(number) == degree;
+    return degree > 1 && degree(number) % degree == 0;
   }
 
   public boolean isPerfectPower(final long number) {
