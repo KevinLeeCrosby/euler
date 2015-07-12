@@ -4,10 +4,11 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeMap;
 
 public class Counter<T> {
   private Map<T, Integer> map = Maps.newHashMap();
@@ -79,17 +80,26 @@ public class Counter<T> {
   }
 
   /**
+   * Ascending sort by key.
+   */
+  public Set<Entry<T, Integer>> ascendingSortByKey() {
+    return new TreeMap<>(map).entrySet();
+  }
+
+  /**
+   * Decending sort by key.
+   */
+  public Set<Entry<T, Integer>> decendingSortByKey() {
+    return new TreeMap<>(map).descendingMap().entrySet();
+  }
+
+  /**
    * Ascending sort by count.
    */
   public List<Entry<T, Integer>> ascendingSortByCount() {
     List<Entry<T, Integer>> entries = Lists.newArrayList(map.entrySet());
 
-    Collections.sort(entries, new Comparator<Entry<T, Integer>>() {
-      @Override
-      public int compare(Entry<T, Integer> entry1, Entry<T, Integer> entry2) {
-        return entry1.getValue() - entry2.getValue();
-      }
-    });
+    Collections.sort(entries, (entry1, entry2) -> entry1.getValue() - entry2.getValue());
 
     return entries;
   }
@@ -100,12 +110,7 @@ public class Counter<T> {
   public List<Entry<T, Integer>> descendingSortByCount() {
     List<Entry<T, Integer>> entries = Lists.newArrayList(map.entrySet());
 
-    Collections.sort(entries, new Comparator<Entry<T, Integer>>() {
-      @Override
-      public int compare(Entry<T, Integer> entry1, Entry<T, Integer> entry2) {
-        return entry2.getValue() - entry1.getValue();
-      }
-    });
+    Collections.sort(entries, (entry1, entry2) -> entry2.getValue() - entry1.getValue());
 
     return entries;
   }
