@@ -61,16 +61,7 @@ public class P095 {
       }
     }
 
-    List<Entry<Long, Integer>> entries = periods.descendingSortByCount();
-    Collections.sort(entries, (e1, e2) -> {
-      int result = e2.getValue().compareTo(e1.getValue());
-      if (result == 0) {
-        result = e1.getKey().compareTo(e2.getKey());
-      }
-      return result;
-    });
-
-    Entry<Long, Integer> entry = entries.get(0);
+    Entry<Long, Integer> entry = periods.descendingSortByCount().get(0);
 
     System.out.println("The smallest member of the longest amicable chain with no element exceeding " + LIMIT + " is "
         + entry.getKey() + " with order " + entry.getValue());

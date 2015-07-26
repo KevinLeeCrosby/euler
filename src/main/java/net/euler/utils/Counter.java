@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -89,7 +90,7 @@ public class Counter<T> {
   /**
    * Decending sort by key.
    */
-  public Set<Entry<T, Integer>> decendingSortByKey() {
+  public Set<Entry<T, Integer>> descendingSortByKey() {
     return new TreeMap<>(map).descendingMap().entrySet();
   }
 
@@ -98,9 +99,19 @@ public class Counter<T> {
    */
   public List<Entry<T, Integer>> ascendingSortByCount() {
     List<Entry<T, Integer>> entries = Lists.newArrayList(map.entrySet());
+    Class<?> t = entries.get(0).getKey().getClass();
 
-    Collections.sort(entries, (entry1, entry2) -> entry1.getValue() - entry2.getValue());
-
+    Collections.sort(entries, new Comparator<Entry<T, Integer>>(){
+      @Override
+      @SuppressWarnings("unchecked")
+      public int compare(Entry<T, Integer> entry1, Entry<T, Integer> entry2) {
+        int result = entry1.getValue().compareTo(entry2.getValue());
+        if (result == 0 && Comparable.class.isAssignableFrom(t)) {
+          result = ((Comparable<? super T>)entry1.getKey()).compareTo(entry2.getKey());
+        }
+        return result;
+      }
+    });
     return entries;
   }
 
@@ -109,8 +120,19 @@ public class Counter<T> {
    */
   public List<Entry<T, Integer>> descendingSortByCount() {
     List<Entry<T, Integer>> entries = Lists.newArrayList(map.entrySet());
+    Class<?> t = entries.get(0).getKey().getClass();
 
-    Collections.sort(entries, (entry1, entry2) -> entry2.getValue() - entry1.getValue());
+    Collections.sort(entries, new Comparator<Entry<T, Integer>>(){
+      @Override
+      @SuppressWarnings("unchecked")
+      public int compare(Entry<T, Integer> entry1, Entry<T, Integer> entry2) {
+        int result = entry2.getValue().compareTo(entry1.getValue());
+        if (result == 0 && Comparable.class.isAssignableFrom(t)) {
+          result = ((Comparable<? super T>)entry1.getKey()).compareTo(entry2.getKey());
+        }
+        return result;
+      }
+    });
 
     return entries;
   }
