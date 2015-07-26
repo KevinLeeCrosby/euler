@@ -67,7 +67,7 @@ public class P095 {
       if (result == 0) {
         result = e1.getKey().compareTo(e2.getKey());
       }
-      return result < 0 ? -1 : result > 0 ? +1 : 0;
+      return result;
     });
 
     Entry<Long, Integer> entry = entries.get(0);
