@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import java.math.BigInteger;
 import java.util.List;
 
+import static java.lang.Math.abs;
 import static java.math.BigInteger.*;
 
 /**
@@ -173,7 +174,7 @@ public class MathUtils {
    * @return GCD of numbers.
    */
   public static long gcd(final long a, final long b) {
-    return b == 0 ? a : gcd(b, a % b);
+    return b == 0 ? abs(a) : gcd(b, a % b);
   }
 
   /**
