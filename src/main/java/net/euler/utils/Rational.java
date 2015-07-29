@@ -12,7 +12,8 @@ import static net.euler.utils.MathUtils.lcm;
  *
  * @author Kevin Crosby
  */
-public class Rational extends Number implements Comparable<Rational>, Comparator<Rational> {
+public class Rational extends Number implements Comparable<Rational> {
+  public static final Rational ZERO = new Rational(0);
   private long numerator, denominator;
 
   public Rational(final long numerator) {
@@ -20,7 +21,9 @@ public class Rational extends Number implements Comparable<Rational>, Comparator
   }
 
   public Rational(final long numerator, final long denominator) {
-    assert denominator != 0 : "Denominator cannot be zero!";
+    if(denominator == 0) {
+      throw new ArithmeticException("Denominator cannot be zero!");
+    }
     if(denominator > 0) {
       this.numerator = numerator;
       this.denominator = denominator;
@@ -39,6 +42,9 @@ public class Rational extends Number implements Comparable<Rational>, Comparator
   }
 
   public static Rational reciprocal(final Rational reciprocal) {
+    if (reciprocal.equals(ZERO)) {
+      throw new ArithmeticException("Cannot take reciprocal of zero!");
+    }
     return new Rational(reciprocal.denominator, reciprocal.numerator);
   }
 
@@ -46,13 +52,22 @@ public class Rational extends Number implements Comparable<Rational>, Comparator
     return reciprocal(this);
   }
 
-  public static void reduce(final Rational rational) {
+  public static boolean isInteger(final Rational rational) {
     rational.reduce();
+    return rational.denominator == 1;
+  }
+
+  public boolean isInteger() {
+    return isInteger(this);
+  }
+
+  public static void reduce(final Rational rational) {
+    rational.reduce(); // TODO: check if rational updated
   }
 
   public void reduce() {
     long gcd = gcd(numerator, denominator);
-    numerator /= gcd; // TODO verify gcd is positive
+    numerator /= gcd;
     denominator /= gcd;
   }
 
@@ -82,6 +97,9 @@ public class Rational extends Number implements Comparable<Rational>, Comparator
   }
 
   public static Rational divide(final Rational dividend, final Rational divisor) {
+    if (divisor.equals(ZERO)) {
+      throw new ArithmeticException("Cannot divide by zero!");
+    }
     long n1 = dividend.numerator, d1 = dividend.denominator;
     long n2 = divisor.numerator, d2 = divisor.denominator;
     long gcd1 = gcd(n1, d1), gcd2 = gcd(n2, d2);
@@ -95,11 +113,14 @@ public class Rational extends Number implements Comparable<Rational>, Comparator
   }
 
   public static Rational divide(final Rational dividend, final long divisor) {
+    if (divisor == 0) {
+      throw new ArithmeticException("Cannot divide by zero!");
+    }
     long n1 = dividend.numerator, d1 = dividend.denominator;
     long gcd1 = gcd(n1, d1);
-    Rational product = new Rational(n1 / gcd1, d1 / gcd1 * divisor);
-    product.reduce();
-    return product;
+    Rational quotient = new Rational(n1 / gcd1, d1 / gcd1 * divisor);
+    quotient.reduce();
+    return quotient;
   }
 
   public Rational divide(final long divisor) {
@@ -200,27 +221,17 @@ public class Rational extends Number implements Comparable<Rational>, Comparator
     return 0;
   }
 
-  public <T extends Comparable<Number>> int compareTo(final T that) {
-    return -that.compareTo(this);
+  @Override
+  public boolean equals(final Object that) {
+    return that != null && (that == this || that instanceof Rational && this.compareTo((Rational) that) == 0);
   }
 
   @Override
-  public int compare(final Rational o1, final Rational o2) {
-    return o1.compareTo(o2);
-  }
-
-  public <T extends Comparable<Number>> int compare(final T o1, final Rational o2) {
-    return o1.compareTo(o2);
-  }
-
-  public <T extends Comparable<Number>> int compare(final Rational o1, final T o2) {
-    return -o2.compareTo(o1);
-  }
-
   public int intValue() {
     return (int) longValue();
   }
 
+  @Override
   public long longValue() {
     return numerator / denominator;
   }
