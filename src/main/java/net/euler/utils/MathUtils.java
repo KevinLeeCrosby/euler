@@ -77,6 +77,17 @@ public class MathUtils {
   }
 
   /**
+   * Long/Integer power of 2.
+   *
+   * @param exponent Exponent to raise 2 to.
+   * @return 2 raised to the exponent power.
+   */
+  public static long pow2(long exponent) {
+    if (exponent < 0) return 0;
+    return 1 << exponent;
+  }
+
+  /**
    * Long/Integer power.
    *
    * @param base     Base to take power of.
@@ -85,6 +96,7 @@ public class MathUtils {
    */
   public static long pow(long base, long exponent) {
     if (exponent < 0) return 0;
+    if (base == 2) return pow2(exponent);
     long product = 1;
     while (exponent > 0) {
       if ((exponent & 1) != 0) { // i.e. if odd
