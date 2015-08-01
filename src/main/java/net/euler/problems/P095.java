@@ -1,18 +1,13 @@
 package net.euler.problems;
 
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 import net.euler.utils.Counter;
 import net.euler.utils.NewPrimes;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 /**
  * The proper divisors of a number are all the divisors excluding the number itself. For example, the proper divisors
