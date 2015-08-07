@@ -77,6 +77,43 @@ public class MathUtils {
   }
 
   /**
+   * Long/Integer log base n.
+   *
+   * @param antilogarithm Antilogarithm to take log base n of.
+   * @param base          Base to take logarithm.
+   * @return Discrete logarithm base n.
+   */
+  public static long logBase(final long antilogarithm, final long base) {
+    if (base == 2) return log2(antilogarithm);
+    long mantissa = 0;
+    long n = antilogarithm / base;
+    while (n > 0) {
+      n /= base;
+      mantissa++;
+    }
+    return mantissa;
+  }
+
+  /**
+   * BigInteger log base n.
+   *
+   * @param antilogarithm Antilogarithm to take log base n of.
+   * @param base          Base to take logarithm.
+   * @return Discrete logarithm base n.
+   */
+  public static BigInteger logBase(final BigInteger antilogarithm, final BigInteger base) {
+    if (base.compareTo(ZERO) != 1) return null;
+    if (base.equals(TWO)) return log2(antilogarithm);
+    BigInteger mantissa = ZERO;
+    BigInteger n = antilogarithm.divide(base);
+    while (n.compareTo(ZERO) == 1) { // i.e. n > 0
+      n = n.divide(base);
+      mantissa = mantissa.add(ONE);
+    }
+    return mantissa;
+  }
+
+  /**
    * Long/Integer power of 2.
    *
    * @param exponent Exponent to raise 2 to.
