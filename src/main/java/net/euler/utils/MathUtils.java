@@ -1,6 +1,5 @@
 package net.euler.utils;
 
-import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
 import java.math.BigInteger;
@@ -180,7 +179,7 @@ public class MathUtils {
    * @return Long/Integer square root of number.
    */
   public static long sqrt(final long radicand) {
-    long x = pow(2, (log2(radicand) >>> 1) + 1);
+    long x = pow2((log2(radicand) >>> 1) + 1);
     long y = (x + radicand / x) >>> 1;
     while (y < x) {
       x = y;
@@ -204,16 +203,6 @@ public class MathUtils {
     }
     return x;
   }
-
-  private static Function<Integer, Long> intToLong() {
-    return new Function<Integer, Long>() {
-      @Override
-      public Long apply(Integer input) {
-        return input.longValue();
-      }
-    };
-  }
-
 
   /**
    * Greatest Common Divisor
@@ -258,7 +247,7 @@ public class MathUtils {
    * @return GCD of numbers.
    */
   public static long gcd(Integer... list) {
-    return gcd(Lists.transform(Lists.newArrayList(list), intToLong()));
+    return gcd(Lists.transform(Lists.newArrayList(list), Integer::longValue));
   }
 
   /**
@@ -303,6 +292,6 @@ public class MathUtils {
    * @return LCM of numbers.
    */
   public static long lcm(Integer... list) {
-    return lcm(Lists.transform(Lists.newArrayList(list), intToLong()));
+    return lcm(Lists.transform(Lists.newArrayList(list), Integer::longValue));
   }
 }
