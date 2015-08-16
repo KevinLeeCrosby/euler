@@ -2,8 +2,6 @@ package net.euler.utils;
 
 import com.google.common.base.Preconditions;
 
-import java.util.Comparator;
-
 import static net.euler.utils.MathUtils.gcd;
 import static net.euler.utils.MathUtils.lcm;
 
@@ -14,6 +12,7 @@ import static net.euler.utils.MathUtils.lcm;
  */
 public class Rational extends Number implements Comparable<Rational> {
   public static final Rational ZERO = new Rational(0);
+  public static final Rational ONE = new Rational(1);
   private long numerator, denominator;
 
   public Rational(final long numerator) {
@@ -31,14 +30,32 @@ public class Rational extends Number implements Comparable<Rational> {
       this.numerator = -numerator;
       this.denominator = -denominator;
     }
+    reduce();
   }
 
   public Rational(final Rational rational) {
     this(rational.numerator, rational.denominator);
   }
 
-  public Rational copy(final Rational rational) {
-    return new Rational(rational);
+  /**
+   * Rational power.
+   *
+   * @param exponent Exponent to raise base to.
+   * @return Base raised to the exponent power.
+   */
+  public Rational pow(final long exponent) {
+    return pow(this, exponent);
+  }
+
+  /**
+   * Rational power.
+   *
+   * @param base     Base to take power of.
+   * @param exponent Exponent to raise base to.
+   * @return Base raised to the exponent power.
+   */
+  public static Rational pow(final Rational base, final long exponent) {
+    return new Rational(MathUtils.pow(base.numerator, exponent), MathUtils.pow(base.denominator, exponent));
   }
 
   public static Rational reciprocal(final Rational reciprocal) {
@@ -52,13 +69,13 @@ public class Rational extends Number implements Comparable<Rational> {
     return reciprocal(this);
   }
 
-  public static boolean isInteger(final Rational rational) {
+  public static boolean isNatural(final Rational rational) {
     rational.reduce();
     return rational.denominator == 1;
   }
 
-  public boolean isInteger() {
-    return isInteger(this);
+  public boolean isNatural() {
+    return isNatural(this);
   }
 
   public static void reduce(final Rational rational) {
@@ -177,12 +194,20 @@ public class Rational extends Number implements Comparable<Rational> {
     return subtract(this, subtrahend);
   }
 
-  public static Rational negate(final Rational negatend) {
-    return new Rational(-negatend.numerator, negatend.denominator);
+  public Rational abs() {
+    return numerator < 0 ? negate() : this;
+  }
+
+  public static Rational abs(final Rational value) {
+    return value.abs();
   }
 
   public Rational negate() {
-    return negate(this);
+    return new Rational(-numerator, denominator);
+  }
+
+  public static Rational negate(final Rational negatend) {
+    return negatend.negate();
   }
 
   public static Rational mediant(final Rational augmend, final Rational addend) {
