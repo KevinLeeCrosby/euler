@@ -83,13 +83,13 @@ public class P093 {
       }
 
       public List<String> next() {
-        if(orderings.hasNext()) {
+        if (orderings.hasNext()) {
           ordering = orderings.next();
-        } else if(operators.hasNext()) {
+        } else if (operators.hasNext()) {
           orderings = new Orderings(m).iterator();
           operator = operators.next();
           ordering = orderings.next();
-        } else if(permutations.hasNext()) {
+        } else if (permutations.hasNext()) {
           operators = new Operations(m).iterator();
           orderings = new Orderings(m).iterator();
           permutation = permutations.next();
@@ -101,7 +101,7 @@ public class P093 {
 
       private List<String> interlace(List<Integer> permutation, List<Character> operator, int ordering) {
         List<String> formula = Lists.newArrayList();
-        for(int mask = 1 << 2 * m, p = 0, q = 0; mask > 0; mask >>>= 1) {
+        for (int mask = 1 << 2 * m, p = 0, q = 0; mask > 0; mask >>>= 1) {
           boolean isClear = (ordering & mask) == 0;
           formula.add(isClear ? permutation.get(p++).toString() : operator.get(q++).toString());
         }
@@ -143,16 +143,16 @@ public class P093 {
           // Next set to 1 the most significant bit to change,
           // set to 0 the least significant ones, and add the necessary 1 bits.
           bits = (t + 1) | ((~t & -~t) - 1) >>> (Integer.numberOfTrailingZeros(bits) + 1);
-        } while(hasNext() && !isValid(bits));
+        } while (hasNext() && !isValid(bits));
         return oldBits;
       }
 
       private boolean isValid(final int bits) {
         int count = 2; // assume two literals are in position 2*k + 1 and 2*k
-        for(int mask = 1 << (2 * m - 2); mask > 0; mask >>>= 1) {
+        for (int mask = 1 << (2 * m - 2); mask > 0; mask >>>= 1) {
           boolean isClear = (bits & mask) == 0;
           count += isClear ? +1 : -1;
-          if(count == 0) {
+          if (count == 0) {
             return false;
           }
         }
@@ -178,11 +178,11 @@ public class P093 {
     }
 
     private void generate(final List<Character> ops, final int j) {
-      if(j == 0) {
+      if (j == 0) {
         operations.add(Lists.newArrayList(ops));
         return;
       }
-      for(char operator : operators) {
+      for (char operator : operators) {
         ops.add(operator);
         generate(ops, j - 1);
         ops.remove(ops.size() - 1);
@@ -241,7 +241,7 @@ public class P093 {
       }
 
       public List<Integer> next() {
-        if(permutations.isEmpty()) {
+        if (permutations.isEmpty()) {
           List<Integer> combination = Lists.newArrayList(combinations.next());
           permute(combination);
         }
@@ -253,11 +253,11 @@ public class P093 {
       }
 
       private void permute(final List<Integer> combination, final int j) {
-        if(k - j == 1) {
+        if (k - j == 1) {
           permutations.add(Lists.newArrayList(combination));
           return;
         }
-        for(int i = j; i < k; ++i) {
+        for (int i = j; i < k; ++i) {
           swap(combination, i, j);
           permute(combination, j + 1);
           swap(combination, i, j);
@@ -314,7 +314,7 @@ public class P093 {
 
       private List<Integer> bits2Set(final int bits) {
         List<Integer> combination = Lists.newArrayList();
-        for(int b = bits; b > 0; b &= b - 1) {
+        for (int b = bits; b > 0; b &= b - 1) {
           int number = Integer.numberOfTrailingZeros(b) + 1;
           combination.add(number);
         }
@@ -324,7 +324,7 @@ public class P093 {
   }
 
   private static Rational evaluate(final Rational a, final Rational b, final char operator) {
-    switch(operator) {
+    switch (operator) {
       case '+':
         return a.add(b);
       case '-':
@@ -340,15 +340,15 @@ public class P093 {
 
   private static Rational evaluate(final List<String> formula) {
     Stack<Rational> stack = new Stack<>();
-    for(final String token : formula) {
-      if(token.matches("-?\\d+")) {
+    for (final String token : formula) {
+      if (token.matches("-?\\d+")) {
         stack.push(new Rational(Integer.parseInt(token)));
       } else {
         char operator = token.charAt(0);
         Rational b = stack.pop();
         Rational a = stack.pop();
         Rational c = evaluate(a, b, operator);
-        if(c == null) {
+        if (c == null) {
           return null;
         }
         stack.push(c);
@@ -359,20 +359,20 @@ public class P093 {
 
   private static Pair<Integer, Integer> evaluate(final int n, final int k) {
     Map<Integer, BitSet> targets = Maps.newHashMap();
-    for(final List<String> formula : new Formulas(n, k)) {
+    for (final List<String> formula : new Formulas(n, k)) {
       Rational result = evaluate(formula);
-      if(result != null && result.isInteger() && result.compareTo(ZERO) == 1) {
+      if (result != null && result.isNatural() && result.compareTo(ZERO) == 1) {
         int digits = extract(formula);
-        if(!targets.containsKey(digits)) {
+        if (!targets.containsKey(digits)) {
           targets.put(digits, new BitSet());
         }
         targets.get(digits).set(result.intValue());
       }
     }
     int digits = 0, bestBit = 0;
-    for(final Entry<Integer, BitSet> entry : targets.entrySet()) {
+    for (final Entry<Integer, BitSet> entry : targets.entrySet()) {
       int bit = entry.getValue().nextClearBit(1) - 1;
-      if(bestBit < bit) {
+      if (bestBit < bit) {
         bestBit = bit;
         digits = entry.getKey();
       }
@@ -382,8 +382,8 @@ public class P093 {
 
   private static int extract(final List<String> formula) {
     Set<Integer> set = Sets.newTreeSet();
-    for(final String token : formula) {
-      if(token.matches("\\d+")) {
+    for (final String token : formula) {
+      if (token.matches("\\d+")) {
         set.add(Integer.parseInt(token));
       }
     }
