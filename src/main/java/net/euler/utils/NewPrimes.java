@@ -153,6 +153,9 @@ public class NewPrimes implements Iterable<Long> {
     if (n < 2 || !isCoprime(n, BASE)) {
       return false;
     }
+    if (n <= 23) {
+      return true;
+    }
     if (n < SIEVE_LIMIT) {
       return !sieve.get((int) pack(n));
     }
@@ -162,7 +165,10 @@ public class NewPrimes implements Iterable<Long> {
       d >>= 1;
       s++;
     }
-    for (final long a : BASE_PRIMES) {
+    for (final long a : this) {
+      if (a > 23) {
+        break;
+      }
       if (modPow(a, d, n) != 1) {
         boolean composite = true;
         for (long r = 0, p = 1; r < s; r++, p <<= 1) { // p = 2^r
