@@ -205,6 +205,40 @@ public class MathUtils {
   }
 
   /**
+   * Binomial coefficient
+   *
+   * @param n Number to choose from.
+   * @param k How many to choose.
+   * @return nCk
+   */
+  public static long binomial(final int n, final int k) {
+    if (n < k || n < 0 || k < 0) return 0;
+    if (k == 0) {
+      return 1;
+    } else {
+      int j = Math.min(n - k, k);
+      return binomial(n, j - 1) * (n - j + 1) / j;
+    }
+  }
+
+  /**
+   * Binomial coefficient
+   *
+   * @param n Number to choose from.
+   * @param k How many to choose.
+   * @return nCk
+   */
+  public static BigInteger binomial(final long n, final long k) {
+    if (n < k || n < 0 || k < 0) return ZERO;
+    if (k == 0) {
+      return ONE;
+    } else {
+      long j = Math.min(n - k, k);
+      return binomial(n, j - 1).multiply(BigInteger.valueOf(n - j + 1)).divide(BigInteger.valueOf(j));
+    }
+  }
+
+  /**
    * Greatest Common Divisor
    *
    * @param a First number.
@@ -222,11 +256,17 @@ public class MathUtils {
    * @return GCD of numbers.
    */
   public static long gcd(List<Long> list) {
-    long gcd = list.get(0);
-    for (int i = 1; i < list.size(); i++) {
-      gcd = gcd(gcd, list.get(i));
+    int length = list.size();
+    switch (length) {
+      case 0:
+        return 0;
+      case 1:
+        return list.get(0);
+      case 2:
+        return gcd(list.get(0), list.get(1));
+      default:
+        return gcd(gcd(list.subList(0, length / 2)), gcd(list.subList(length / 2, length)));
     }
-    return gcd;
   }
 
   /**
@@ -268,11 +308,17 @@ public class MathUtils {
    * @return LCM of numbers.
    */
   public static long lcm(List<Long> list) {
-    long lcm = list.get(0);
-    for (int i = 1; i < list.size(); i++) {
-      lcm = lcm(lcm, list.get(i));
+    int length = list.size();
+    switch (length) {
+      case 0:
+        return 0;
+      case 1:
+        return list.get(0);
+      case 2:
+        return lcm(list.get(0), list.get(1));
+      default:
+        return lcm(lcm(list.subList(0, length / 2)), lcm(list.subList(length / 2, length)));
     }
-    return lcm;
   }
 
   /**
