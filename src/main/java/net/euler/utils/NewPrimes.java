@@ -3,6 +3,7 @@ package net.euler.utils;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
@@ -165,10 +166,7 @@ public class NewPrimes implements Iterable<Long> {
       d >>= 1;
       s++;
     }
-    for (final long a : this) {
-      if (a > 23) {
-        break;
-      }
+    for (final long a : Iterables.limit(this, 9)) {
       if (modPow(a, d, n) != 1) {
         boolean composite = true;
         for (long r = 0, p = 1; r < s; r++, p <<= 1) { // p = 2^r
