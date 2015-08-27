@@ -81,6 +81,15 @@ public class Counter<T> {
   }
 
   /**
+   * Get key set of counter keys.
+   *
+   * @return Key set of counter keys.
+   */
+  public Set<T> keySet() {
+    return map.keySet();
+  }
+
+  /**
    * Ascending sort by key.
    */
   public Set<Entry<T, Integer>> ascendingSortByKey() {
@@ -88,7 +97,7 @@ public class Counter<T> {
   }
 
   /**
-   * Decending sort by key.
+   * Descending sort by key.
    */
   public Set<Entry<T, Integer>> descendingSortByKey() {
     return new TreeMap<>(map).descendingMap().entrySet();
