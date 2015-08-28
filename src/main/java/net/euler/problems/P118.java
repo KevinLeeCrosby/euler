@@ -23,7 +23,7 @@ import static net.euler.utils.NewPrimes.isCoprime;
  * @author Kevin Crosby
  */
 public class P118 {
-  private static final NewPrimes primes = NewPrimes.getInstance();
+  private static final NewPrimes primes = NewPrimes.getInstance(98765431);
 
   private static final long GOAL = Lists.newArrayList(Iterables.limit(primes, 9)).stream().reduce((i, j) -> i * j).get();
 
