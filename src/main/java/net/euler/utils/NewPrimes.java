@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import static java.lang.Math.max;
 import static net.euler.utils.MathUtils.*;
 
 /**
@@ -27,21 +28,31 @@ public class NewPrimes implements Iterable<Long> {
   private static int BITS;
   private static List<Long> BASE_PRIMES;
   private static BiMap<Integer, Integer> MODULI;
+  private static long BIT_LIMIT, SIEVE_LIMIT;
 
   private static final long PRIMALITY_LIMIT = 341550071728321L;
-  private static final long BIT_LIMIT = 100000000L; // up to ~375 million
-  private static long SIEVE_LIMIT;
 
-  private NewPrimes() {
+  private NewPrimes(final long sieveLimit) {
     initialize();
-    generate();
+    generate(sieveLimit);
+  }
+
+  public static NewPrimes getInstance(final long sieveLimit) {
+    if (instance == null) {
+      synchronized (NewPrimes.class) {
+        if (instance == null) {
+          instance = new NewPrimes(sieveLimit);
+        }
+      }
+    }
+    return instance;
   }
 
   public static NewPrimes getInstance() {
     if (instance == null) {
       synchronized (NewPrimes.class) {
         if (instance == null) {
-          instance = new NewPrimes();
+          instance = new NewPrimes(375000001L);
         }
       }
     }
@@ -74,7 +85,6 @@ public class NewPrimes implements Iterable<Long> {
     BASE_PRIMES = basePrimes.build();
     MODULI = moduli.build();
     BITS = MODULI.size();
-    SIEVE_LIMIT = unpack(BIT_LIMIT);
   }
 
   /**
@@ -82,7 +92,13 @@ public class NewPrimes implements Iterable<Long> {
    *
    * See:  http://www.qsl.net/w2gl/blackkey.html
    */
-  private void generate() {
+  private void generate(final long sieveLimit) {
+    long oddLimit = max(sieveLimit + 1, 1000000) | 1; // odd number
+    while (!MODULI.inverse().containsKey((int) (oddLimit % BASE))) oddLimit += 2;
+    SIEVE_LIMIT = oddLimit;
+    BIT_LIMIT = pack(SIEVE_LIMIT);
+    if (BIT_LIMIT > Integer.MAX_VALUE) throw new NumberFormatException("Sieve limit of " + SIEVE_LIMIT + " is too large!");
+
     sieve = new BitSet((int) BIT_LIMIT); // all bits are initially false, let false = prime, true = composite
     sieve.set(0); // 1 is not a prime
     long prime = unpack(1);
