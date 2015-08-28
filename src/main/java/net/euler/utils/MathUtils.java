@@ -120,7 +120,7 @@ public class MathUtils {
    */
   public static long pow2(long exponent) {
     if (exponent < 0) return 0;
-    return 1 << exponent;
+    return 1L << exponent;
   }
 
   /**
