@@ -1,6 +1,5 @@
 package net.euler.utils;
 
-import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
@@ -8,9 +7,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.apache.commons.math3.random.RandomDataGenerator;
 
-import java.util.BitSet;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -29,12 +26,12 @@ import static net.euler.utils.MathUtils.sqrt;
  */
 public class NewPrimes implements Iterable<Long> {
   private static NewPrimes instance = null;
-  private static BitSet sieve;
+  private static LongBitSet sieve;
 
   private static final int BASE = 30;
   private static int BITS;
   private static List<Long> BASE_PRIMES;
-  private static BiMap<Integer, Integer> MODULI;
+  private static ImmutableBiMap<Long, Long> MODULI;
   private static long BIT_LIMIT, SIEVE_LIMIT;
 
   private static final long PRIMALITY_LIMIT = 341550071728321L;
@@ -61,23 +58,23 @@ public class NewPrimes implements Iterable<Long> {
 
   private void initialize() {
     ImmutableList.Builder<Long> basePrimes = new ImmutableList.Builder<>();
-    ImmutableBiMap.Builder<Integer, Integer> moduli = new ImmutableBiMap.Builder<>();
+    ImmutableBiMap.Builder<Long, Long> moduli = new ImmutableBiMap.Builder<>();
     basePrimes.add(2L);
 
-    final int bitLimit = (BASE - 1) >> 1;
-    int lastBasePrime = 2;
-    BitSet modSieve = new BitSet(bitLimit); // fill with false (inverted logic), for n >= 3;
-    for(int primeBit = modSieve.nextClearBit(0), prime = 3, primorial = 6; primorial <= BASE;
+    final long bitLimit = (BASE - 1) >> 1;
+    long lastBasePrime = 2;
+    LongBitSet modSieve = new LongBitSet(); // fill with false (inverted logic), for n >= 3;
+    for(long primeBit = modSieve.nextClearBit(0), prime = 3, primorial = 6; primorial <= BASE;
         primeBit = modSieve.nextClearBit(primeBit + 1), prime = (primeBit << 1) + 3, primorial *= prime) {
-      basePrimes.add((long) prime);
+      basePrimes.add(prime);
       lastBasePrime = prime;
-      for(int compositeBit = primeBit + prime; compositeBit <= bitLimit; compositeBit += prime) {
+      for(long compositeBit = primeBit + prime; compositeBit <= bitLimit; compositeBit += prime) {
         modSieve.set(compositeBit); // set to composite
       }
     }
 
-    moduli.put(0, 1); // NOTE: moduli are not necessarily prime in all bases
-    for(int i = 1, modBit = modSieve.nextClearBit(lastBasePrime >> 1), modulus = (modBit << 1) + 3; modBit < bitLimit;
+    moduli.put(0L, 1L); // NOTE: moduli are not necessarily prime in all bases
+    for(long i = 1, modBit = modSieve.nextClearBit(lastBasePrime >> 1), modulus = (modBit << 1) + 3; modBit < bitLimit;
         ++i, modBit = modSieve.nextClearBit(modBit + 1), modulus = (modBit << 1) + 3) {
       moduli.put(i, modulus);
     }
@@ -94,41 +91,39 @@ public class NewPrimes implements Iterable<Long> {
    */
   private void generate(final long sieveLimit) {
     long oddLimit = max(sieveLimit + 1, 20000000) | 1; // odd number
-    while(!MODULI.inverse().containsKey((int) (oddLimit % BASE))) {
+    while(!MODULI.inverse().containsKey(oddLimit % BASE)) {
       oddLimit += 2;
     }
     SIEVE_LIMIT = oddLimit;
     BIT_LIMIT = pack(SIEVE_LIMIT);
-    if(BIT_LIMIT > Integer.MAX_VALUE) {
+    if(BIT_LIMIT < 0) {
       throw new NumberFormatException("Sieve limit of " + SIEVE_LIMIT + " is too large!");
     }
 
-    sieve = new BitSet((int) BIT_LIMIT); // all bits are initially false, let false = prime, true = composite
+    sieve = new LongBitSet(); // all bits are initially false, let false = prime, true = composite
     sieve.set(0); // 1 is not a prime
-    long prime = unpack(1);
-    for(int primeBit = sieve.nextClearBit(1); prime <= SIEVE_LIMIT / prime;
+    for(long prime = unpack(1), primeBit = sieve.nextClearBit(1); prime <= SIEVE_LIMIT / prime;
         primeBit = sieve.nextClearBit(primeBit + 1), prime = unpack(primeBit)) {
-      long ratio = Long.MAX_VALUE / prime;
-      long multiplier = unpack(primeBit);
-      long composite = prime * multiplier;
-      for(int i = 0, multiplierBit = primeBit; i < BITS && multiplier <= ratio && composite < SIEVE_LIMIT;
+      long ratio = SIEVE_LIMIT / prime;
+      for(long i = 0, multiplierBit = primeBit, multiplier = unpack(multiplierBit), composite = prime * multiplier;
+          i < BITS && multiplier <= ratio && composite < SIEVE_LIMIT;
           ++i, multiplier = unpack(++multiplierBit), composite = prime * multiplier) { // prevent overflow
         for(long compositeBit = pack(composite); compositeBit < BIT_LIMIT; compositeBit += BITS * prime) {
-          sieve.set((int) compositeBit);
+          sieve.set(compositeBit);
         }
       }
     }
   }
 
   private long unpack(final long bit) {
-    int mod = (int) (bit % BITS);
+    long mod = bit % BITS;
     long offset = bit / BITS;
     return BASE * offset + MODULI.get(mod); // number
   }
 
   private long pack(final long number) {
     assert isCoprime(number, BASE) : "Number " + number + " is not coprime with base " + BASE;
-    int invMod = (int) (number % BASE);
+    long invMod = number % BASE;
     long offset = number / BASE;
     return BITS * offset + MODULI.inverse().get(invMod); // bit
   }
@@ -153,7 +148,7 @@ public class NewPrimes implements Iterable<Long> {
   }
 
   public long getLargestStoredPrime() {
-    int bit = sieve.previousClearBit((int) BIT_LIMIT - 1);
+    long bit = sieve.previousClearBit(BIT_LIMIT - 1);
     return unpack(bit);
   }
 
@@ -178,10 +173,10 @@ public class NewPrimes implements Iterable<Long> {
       return true;
     }
     if(n < SIEVE_LIMIT) {
-      return !sieve.get((int) pack(n));
+      return !sieve.get(pack(n));
     }
     long d = n - 1;
-    int s = 0;
+    long s = 0;
     while(d % 2 == 0) {
       d >>= 1;
       s++;
@@ -261,21 +256,21 @@ public class NewPrimes implements Iterable<Long> {
 
   public List<Long> factor(final long number) { // TODO:  replace with Quadratic Sieve?
     return trialDivision(number);
-//    if(number < 2L) {
-//      return Lists.newArrayList();
-//    }
-//    if(isPrime(number)) {
-//      return Lists.newArrayList(number);
-//    }
-//    long divisor = rho(number);
-//    if(divisor == 1 || divisor == number) {
-//      return trialDivision(number); // rho failed
-//    }
-//    List<Long> factors = factor(divisor);
-//    factors.addAll(factor(number / divisor));
-//    factors.sort(Comparator.naturalOrder());
-//
-//    return factors;
+    //    if(number < 2L) {
+    //      return Lists.newArrayList();
+    //    }
+    //    if(isPrime(number)) {
+    //      return Lists.newArrayList(number);
+    //    }
+    //    long divisor = rho(number);
+    //    if(divisor == 1 || divisor == number) {
+    //      return trialDivision(number); // rho failed
+    //    }
+    //    List<Long> factors = factor(divisor);
+    //    factors.addAll(factor(number / divisor));
+    //    factors.sort(Comparator.naturalOrder());
+    //
+    //    return factors;
   }
 
 
@@ -452,7 +447,7 @@ public class NewPrimes implements Iterable<Long> {
         prime = BASE_PRIMES.get(baseCount++);
       } else {
         prime = unpack(bit);
-        bit = sieve.nextClearBit((int) bit + 1);
+        bit = sieve.nextClearBit(bit + 1);
       }
       return prime;
     }
