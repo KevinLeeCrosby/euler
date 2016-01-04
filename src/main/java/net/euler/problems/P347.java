@@ -30,8 +30,8 @@ public class P347 {
       return 0;
     }
     long maximum = 0;
-    for(long powP = p, b = logBase(n / powP, q), powQ = pow(q, b); n / powP > 1 && b > 0; powP *= p, b = logBase(n / powP, q), powQ = pow(q, b)) {
-      long product = powP * powQ;
+    for(long powP = p, b = logBase(n / powP, q); n / powP > 1 && b > 0; powP *= p, b = logBase(n / powP, q)) {
+      long powQ = pow(q, b), product = powP * powQ;
       if(maximum < product) {
         maximum = product;
       }
