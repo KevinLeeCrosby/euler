@@ -398,14 +398,13 @@ public class LongBitSet implements Cloneable, java.io.Serializable {
     int fromBitIndex = getBitIndex(fromIndex);
     long fromSetIndex = getSetIndex(fromIndex), maxSetIndex = m_sets.isEmpty() ? 0 : Collections.max(m_sets.keySet());
     BitSet bitSet = m_sets.get(fromSetIndex);
-    while(bitSet == null && fromSetIndex <= maxSetIndex) {
+    while(bitSet == null && fromSetIndex < maxSetIndex) {
       bitSet = m_sets.get(++fromSetIndex);
       fromBitIndex = 0;
     }
-    if(fromSetIndex > maxSetIndex) {
+    if(bitSet == null) {
       return -1;
     }
-    assert bitSet != null;
     int bitIndex = bitSet.nextSetBit(fromBitIndex);
     if(bitIndex < 0) {
       return -1;
@@ -422,17 +421,15 @@ public class LongBitSet implements Cloneable, java.io.Serializable {
    */
   public long nextClearBit(final long fromIndex) {
     int fromBitIndex = getBitIndex(fromIndex);
-    long fromSetIndex = getSetIndex(fromIndex), maxSetIndex = m_sets.isEmpty() ? 0 : Collections.max(m_sets.keySet());
+    long fromSetIndex = getSetIndex(fromIndex);
     BitSet bitSet = m_sets.get(fromSetIndex);
-    while(bitSet == null && fromSetIndex <= maxSetIndex) {
-      bitSet = m_sets.get(++fromSetIndex);
-      fromBitIndex = 0;
+    if(bitSet == null) {
+      return fromIndex;
     }
-    if(fromSetIndex > maxSetIndex) {
-      return getIndex(maxSetIndex, 0);
-    }
-    assert bitSet != null;
     int bitIndex = bitSet.nextClearBit(fromBitIndex);
+    if(bitIndex > VALUE_MASK) {
+      return nextClearBit(getIndex(++fromSetIndex, 0));
+    }
     return getIndex(fromSetIndex, bitIndex);
   }
 
@@ -458,14 +455,13 @@ public class LongBitSet implements Cloneable, java.io.Serializable {
     int fromBitIndex = getBitIndex(fromIndex);
     long fromSetIndex = getSetIndex(fromIndex), minSetIndex = m_sets.isEmpty() ? 0 : Collections.min(m_sets.keySet());
     BitSet bitSet = m_sets.get(fromSetIndex);
-    while(bitSet == null && fromSetIndex >= minSetIndex) {
+    while(bitSet == null && fromSetIndex > minSetIndex) {
       bitSet = m_sets.get(--fromSetIndex);
-      fromBitIndex = VALUE_BITS - 1;
+      fromBitIndex = (int) VALUE_MASK;
     }
-    if(fromSetIndex < minSetIndex) {
+    if(bitSet == null) {
       return -1;
     }
-    assert bitSet != null;
     int bitIndex = bitSet.previousSetBit(fromBitIndex);
     if(bitIndex < 0) {
       return -1;
@@ -485,19 +481,19 @@ public class LongBitSet implements Cloneable, java.io.Serializable {
    */
   public long previousClearBit(final long fromIndex) {
     int fromBitIndex = getBitIndex(fromIndex);
-    long fromSetIndex = getSetIndex(fromIndex), minSetIndex = m_sets.isEmpty() ? 0 : Collections.min(m_sets.keySet());
+    long fromSetIndex = getSetIndex(fromIndex);
     BitSet bitSet = m_sets.get(fromSetIndex);
-    while(bitSet == null && fromSetIndex >= minSetIndex) {
-      bitSet = m_sets.get(--fromSetIndex);
-      fromBitIndex = VALUE_BITS - 1;
+    if(bitSet == null) {
+      return fromIndex;
     }
-    if(fromSetIndex < minSetIndex) {
-      return -1;
-    }
-    assert bitSet != null;
     int bitIndex = bitSet.previousClearBit(fromBitIndex);
     if(bitIndex < 0) {
-      return -1;
+      long minSetIndex = m_sets.isEmpty() ? 0 : Collections.min(m_sets.keySet());
+      if(fromSetIndex < minSetIndex) {
+        return previousClearBit(getIndex(--fromSetIndex, (int) VALUE_MASK));
+      } else {
+        return -1;
+      }
     }
     return getIndex(fromSetIndex, bitIndex);
   }
