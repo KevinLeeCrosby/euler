@@ -36,15 +36,11 @@ public class P429 {
   private long modSigma2Star(final long n, final long modulus) {
     // NOTE:  number of unitary divisors = 2 ^ # unique primes
     long product = 1;
-    long count = 0, largest = 2;
     for(final long p : primes) {
       long exponent = vp(p, n);
       if (exponent == 0) break;
-      count++;
-      largest = p;
       product = product * (1 + modPow(p, 2 * exponent, modulus)) % modulus;
     }
-    System.out.format("%d unique primes up to %d\n", count, largest);
     return product;
   }
 
