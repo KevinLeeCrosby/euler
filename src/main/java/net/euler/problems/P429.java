@@ -13,7 +13,7 @@ import static net.euler.utils.MathUtils.modPow;
  *
  * Find S(100 000 000!) modulo 1 000 000 009.
  *
- * @author Kevin
+ * @author Kevin Crosby
  */
 public class P429 {
   private final NewPrimes primes;
