@@ -205,6 +205,34 @@ public class MathUtils {
   }
 
   /**
+   * Factorial
+   *
+   * @param n Number to choose from.
+   * @return n!
+   */
+  public static long factorial(final int n) {
+    assert n >= 0 : String.format("%d must be a non-negative integer!", n);
+    if (n < 2) {
+      return 1;
+    }
+    return n * factorial(n - 1);
+  }
+
+  /**
+   * Factorial
+   *
+   * @param n Number to choose from.
+   * @return n!
+   */
+  public static BigInteger factorial(final long n) {
+    assert n >= 0 : String.format("%d must be a non-negative integer!", n);
+    if (n < 2) {
+      return ONE;
+    }
+    return BigInteger.valueOf(n).multiply(factorial(n - 1));
+  }
+
+  /**
    * Binomial coefficient
    *
    * @param n Number to choose from.
@@ -213,7 +241,7 @@ public class MathUtils {
    */
   public static long binomial(final int n, final int k) {
     if (n < k || n < 0 || k < 0) return 0;
-    if (k == 0) {
+    if (k == 0 || k == n) {
       return 1;
     } else {
       int j = Math.min(n - k, k);
@@ -230,7 +258,7 @@ public class MathUtils {
    */
   public static BigInteger binomial(final long n, final long k) {
     if (n < k || n < 0 || k < 0) return ZERO;
-    if (k == 0) {
+    if (k == 0 || k == n) {
       return ONE;
     } else {
       long j = Math.min(n - k, k);

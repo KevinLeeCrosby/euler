@@ -9,7 +9,9 @@ import java.util.List;
 import static org.apache.commons.math3.util.CombinatoricsUtils.factorial;
 
 /**
- * @author Kevin
+ * Permutation generator
+ *
+ * @author Kevin Crosby
  */
 public class Permutations<T> implements Iterable<List<T>> {
   private final List<T> items;
@@ -28,7 +30,6 @@ public class Permutations<T> implements Iterable<List<T>> {
   private class PermutationIterator implements Iterator<List<T>> {
     private final long limit = factorial(n);
     private int d; // decimal
-
 
     private PermutationIterator() {
       d = 0;
@@ -68,7 +69,7 @@ public class Permutations<T> implements Iterable<List<T>> {
       for(int i = 0; i < n - 1; ++i) {
         Collections.rotate(sequence.subList(i, i + lehmer[i] + 1), 1);
       }
-      return sequence;
+      return Collections.unmodifiableList(sequence);
     }
 
     //private int[] lehmer(final List<T> permutation) {
