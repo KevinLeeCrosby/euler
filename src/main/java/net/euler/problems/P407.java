@@ -1,12 +1,10 @@
 package net.euler.problems;
 
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.euler.utils.NewPrimes;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import static java.lang.Math.floor;
 import static java.lang.Math.max;
@@ -76,7 +74,7 @@ public class P407 {
     primes = NewPrimes.getInstance(limit);
 
     long sum = 0;
-    for(long n = 1, i = 0; n <= limit; ++n) {
+    for(long n = 1; n <= limit; ++n) {
       long m = m(n);
       sum += m;
     }
