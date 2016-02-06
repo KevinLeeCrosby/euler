@@ -90,7 +90,7 @@ public class NewPrimes implements Iterable<Long> {
    * See:  http://www.qsl.net/w2gl/blackkey.html
    */
   private void generate(final long sieveLimit) {
-    long oddLimit = max(sieveLimit + 1, 20000000) | 1; // odd number
+    long oddLimit = max(sieveLimit + 1, 31) | 1; // odd number
     while(!MODULI.inverse().containsKey(oddLimit % BASE)) {
       oddLimit += 2;
     }
