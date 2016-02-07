@@ -7,7 +7,7 @@ import static net.euler.utils.MathUtils.binomial;
  *
  * @author Kevin Crosby
  */
-class Pascal { // TODO add bounds checking
+public class Pascal { // TODO add bounds checking
   private int n, k;
   private long c;
 
