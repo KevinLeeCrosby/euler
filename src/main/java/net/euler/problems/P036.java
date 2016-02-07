@@ -10,7 +10,7 @@ package net.euler.problems;
  * @author Kevin Crosby
  */
 public class P036 {
-  private static boolean isDigitalPalidrome(long n) { //digital palidrome
+  private static boolean isDigitalPalindrome(long n) { //digital palindrome
     long r = 0;
     for (long d = n; d > 0; d /= 10) {
       r = r * 10 + d % 10;
@@ -18,7 +18,7 @@ public class P036 {
     return r == n;
   }
 
-  private static boolean isBinaryPalidrome(long n) { // binary palindrome
+  private static boolean isBinaryPalindrome(long n) { // binary palindrome
     long r = 0;
     for (long b = n; b > 0; b >>= 1) {
       r = (r << 1) | (b & 1);
@@ -26,8 +26,8 @@ public class P036 {
     return r == n;
   }
 
-  private static boolean isDoubleBasePalidrome(long n) { // digital and binary palindrome
-    return isDigitalPalidrome(n) && isBinaryPalidrome(n);
+  private static boolean isDoubleBasePalindrome(long n) { // digital and binary palindrome
+    return isDigitalPalindrome(n) && isBinaryPalindrome(n);
   }
 
   public static void main(String[] args) {
@@ -40,7 +40,7 @@ public class P036 {
 
     long sum = 0;
     for (int n = 1; n < limit; n++) {
-      if (isDoubleBasePalidrome(n)) {
+      if (isDoubleBasePalindrome(n)) {
         sum += n;
       }
     }
