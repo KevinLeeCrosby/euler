@@ -20,7 +20,7 @@ import static net.euler.utils.MathUtils.sqrt;
 public class P187 {
   private final long limit;
   private final NewPrimes primes;
-  private final Map<Long, Integer> map;
+  private final Map<Long, Integer> pi;
 
   private P187(long limit) {
     this.limit = limit;
@@ -30,7 +30,7 @@ public class P187 {
     for(long prime : primes) {
       builder.put(prime, i++);
     }
-    map = builder.build();
+    pi = builder.build();
   }
 
   private long count() {
@@ -43,7 +43,7 @@ public class P187 {
       while(!primes.isPrime(q)) {
         q -= 2;
       }
-      int i = map.get(p), j = map.get(q);
+      int i = pi.get(p), j = pi.get(q);
       count += j - i + 1;
     }
     return count;
