@@ -27,8 +27,7 @@ import static net.euler.utils.MathUtils.sqrt;
  *
  * A positive integer n is called squarefree if no square of a prime divides n. Of the twelve distinct numbers in the
  * first eight rows of Pascal's triangle, all except 4 and 20 are squarefree. The sum of the distinct squarefree
- * numbers
- * in the first eight rows is 105.
+ * numbers in the first eight rows is 105.
  *
  * Find the sum of the distinct squarefree numbers in the first 51 rows of Pascal's triangle.
  *
@@ -52,7 +51,7 @@ public class P203 {
   }
 
   private long sum() {
-    Set<Long> set = Sets.newTreeSet();
+    Set<Long> set = Sets.newHashSet();
     pascal.goLowerRight();
     set.add(pascal.getCurrent());
     for(int n = 2; n < rows; ++n) {
