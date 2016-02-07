@@ -17,12 +17,16 @@ public class Pascal { // TODO add bounds checking
   }
 
   public Pascal(final int n, final int k) {
+    goTo(n, k);
+  }
+
+  public void goTo(final int n, final int k) {
     this.n = n;
     this.k = k;
     this.c = binomial(n, k);
   }
 
-  public long getC() {
+  public long getCurrent() {
     return c;
   }
 
@@ -35,7 +39,7 @@ public class Pascal { // TODO add bounds checking
   }
 
   public long getRight() {
-    return c / (k + 1) * (n - k);
+    return c * (n - k) / (k + 1);
   }
 
   public long goRight() {
@@ -45,7 +49,7 @@ public class Pascal { // TODO add bounds checking
   }
 
   public long getLeft() {
-    return c / (n - k + 1) * k;
+    return c * k / (n - k + 1);
   }
 
   public void goLeft() {
@@ -54,7 +58,7 @@ public class Pascal { // TODO add bounds checking
   }
 
   public long getUpperRight() {
-    return c / n * (n - k);
+    return c * (n - k) / n;
   }
 
   public void goUpperRight() {
@@ -63,7 +67,7 @@ public class Pascal { // TODO add bounds checking
   }
 
   public long getUpperLeft() {
-    return c / n * k;
+    return c * k / n;
   }
 
   public void goUpperLeft() {
@@ -73,7 +77,7 @@ public class Pascal { // TODO add bounds checking
   }
 
   public long getLowerRight() {
-    return c / (k + 1) * (n + 1);
+    return c * (n + 1) / (k + 1);
   }
 
   public void goLowerRight() {
@@ -83,7 +87,7 @@ public class Pascal { // TODO add bounds checking
   }
 
   public long getLowerLeft() {
-    return c / (n - k + 1) * (n + 1);
+    return c * (n + 1) / (n - k + 1);
   }
 
   public void goLowerLeft() {

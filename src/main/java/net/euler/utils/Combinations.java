@@ -50,14 +50,14 @@ public class Combinations<T> implements Iterable<List<T>> {
         }
         break;
       }
-      while(pascal.getC() > n) {
+      while(pascal.getCurrent() > n) {
         pascal.goUpperLeft();
       }
       while(pascal.getLowerRight() <= n) {
         pascal.goLowerRight();
       }
       combinadic[k - i] = pascal.getN();
-      n -= pascal.getC();
+      n -= pascal.getCurrent();
       pascal.goRight();
     }
     return combinadic;
