@@ -91,8 +91,8 @@ public class NewPrimes implements Iterable<Long> {
    */
   private void generate(final long sieveLimit) {
     long oddLimit = max(sieveLimit + 1, 31) | 1; // odd number
-    while(!MODULI.inverse().containsKey(oddLimit % BASE)) {
-      oddLimit += 2;
+    while(!MODULI.containsValue(oddLimit % BASE)) {
+      oddLimit -= 2;
     }
     SIEVE_LIMIT = oddLimit;
     BIT_LIMIT = pack(SIEVE_LIMIT);
