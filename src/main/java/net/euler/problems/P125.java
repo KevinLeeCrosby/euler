@@ -4,8 +4,6 @@ import com.google.common.collect.Sets;
 
 import java.util.Set;
 
-import static net.euler.utils.MathUtils.sqrt;
-
 /**
  * The palindromic number 595 is interesting because it can be written as the sum of consecutive squares: 6^2 + 7^2 +
  * 8^2 + 9^2 + 10^2 + 11^2 + 12^2.
@@ -32,7 +30,7 @@ public class P125 {
     final long limit = args.length > 0 ? Long.parseLong(args[0]) : 100000000;
 
     Set<Long> set = Sets.newHashSet();
-    for(long om = 1, sm = 1; om + 1 < 2 * sqrt(limit); om += 2, sm += om) {  // m = (om + 1) / 2
+    for(long om = 1, sm = 1; sm < limit; om += 2, sm += om) {  // m = (om + 1) / 2
       for(long on = om + 2, sn = sm + on, number = sm + sn; number < limit; on += 2, sn += on, number += sn) { // n = (on + 1) / 2
         if(isPalindrome(number)) {
           set.add(number);
