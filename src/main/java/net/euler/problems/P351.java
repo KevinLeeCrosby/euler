@@ -1,5 +1,7 @@
 package net.euler.problems;
 
+import net.euler.utils.MathUtils;
+
 import java.util.stream.IntStream;
 
 import static net.euler.utils.MathUtils.binomial;
@@ -31,14 +33,27 @@ public class P351 {
 
   // See http://mathoverflow.net/questions/99473/calculating-m%C3%B6bius-function
   private int[] sieveMobius() {
-    int[] mu = IntStream.generate(() -> -1).limit(limit + 1).toArray();
-    mu[0] = 0;
-    mu[1] = 1;
-    for(int n = 2; n <= limit; n++) {
-      if(mu[n] != 0) {
-        for(int m = n + n; m <= limit; m += n) {
-          mu[m] -= mu[n];
+    int sqrt = (int) MathUtils.sqrt(limit);
+    int[] mu = IntStream.generate(() -> 1).limit(limit + 1).toArray();
+    for(int i = 2; i <= sqrt; i++) {
+      if(mu[i] == 1) {
+        for(int j = i; j <= limit; j += i) {
+          mu[j] *= -i;
         }
+        for(int j = i * i; j <= limit; j += i * i) {
+          mu[j] = 0;
+        }
+      }
+    }
+    for(int i = 2; i <= limit; i++) {
+      if(mu[i] == i) {
+        mu[i] = 1;
+      } else if(mu[i] == -i) {
+        mu[i] = -1;
+      } else if(mu[i] < 0) {
+        mu[i] = 1;
+      } else if(mu[i] > 0) {
+        mu[i] = -1;
       }
     }
     return mu;
