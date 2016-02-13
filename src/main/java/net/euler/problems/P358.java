@@ -38,7 +38,7 @@ import static net.euler.utils.MathUtils.modPow;
 public class P358 {
   private static final NewPrimes PRIMES = NewPrimes.getInstance(1000);
 
-  // http://math.stackexchange.com/questions/124408/finding-a-primitive-root-of-a-prime-number
+  // See: http://math.stackexchange.com/questions/124408/finding-a-primitive-root-of-a-prime-number
   private static boolean isPrimitiveRoot(final long base, final long prime) {
     assert PRIMES.isPrime(prime);
     if(!NewPrimes.isCoprime(base, prime)) {
@@ -68,7 +68,7 @@ public class P358 {
     long ending = 99999 * inverseModulus % mask;
     long lowerBound = (nines / 138) / mask * mask + ending;
     long upperBound = (nines / 137) / mask * mask + ending;
-    for(long m = lowerBound; m < upperBound; m += mask) { // 729809891 answer
+    for(long m = lowerBound; m < upperBound; m += mask) {
       if(isFullRepetendPrime(10, m)) {
         long sum = sum(10, m);
         System.out.format("The sum of all the digits of 00000000137...56789 (prime %d) is %d.\n", m, sum);
