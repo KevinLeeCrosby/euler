@@ -21,12 +21,10 @@ import static net.euler.utils.MathUtils.pow;
  * @author Kevin Crosby
  */
 public class P549 {
-  private final int limit;
   private BitSet sieve;
   private final int[] a;
 
   private P549(final int limit) {
-    this.limit = limit;
     this.a = generate(limit);
   }
 
