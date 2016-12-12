@@ -1,6 +1,5 @@
 package net.euler.utils;
 
-import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
@@ -13,8 +12,6 @@ import java.util.stream.LongStream;
 
 import static java.math.BigInteger.ONE;
 import static java.math.BigInteger.ZERO;
-import static net.euler.utils.MathUtils.gcd;
-import static net.euler.utils.MathUtils.sqrt;
 
 
 /**
