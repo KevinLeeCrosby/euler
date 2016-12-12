@@ -47,7 +47,7 @@ public class Primes implements Iterable<Long> {
    *
    * @param limit Number to generate primes up to.
    */
-  public void generate(final long limit) { // TODO:  implement more optimized Sieve of Eratosthenes
+  public void generate(final long limit) {
     assert limit > 0 : "Limit must be positive!";
     int noPrimes = primes.size();
     long maxPrime = noPrimes > 0 ? primes.get(noPrimes - 1) : 0L;

@@ -8,6 +8,8 @@ import java.math.BigInteger;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.LongStream;
 
 import static java.math.BigInteger.ONE;
 import static java.math.BigInteger.ZERO;
@@ -26,10 +28,9 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
   private static final BigInteger LIMIT = new BigInteger("3317044064679887385961981");
 
   private BigIntegerPrimes() {
-    primes = Lists.newArrayList(
-        Lists.transform(Lists.newArrayList(2L, 3L, 5L, 7L, 11L, 13L, 17L, 19L, 23L, 29L, 31L, 37L, 41L), // required for isPrime
-            BigInteger::valueOf)
-    );
+    primes = LongStream.of(2L, 3L, 5L, 7L, 11L, 13L, 17L, 19L, 23L, 29L, 31L, 37L, 41L)
+        .mapToObj(BigInteger::valueOf)
+        .collect(Collectors.toList()); // required for isPrime
   }
 
   public static BigIntegerPrimes getInstance() {
@@ -58,7 +59,7 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
    *
    * @param limit Number to generate primes up to.
    */
-  public void generate(final BigInteger limit) { // TODO:  implement more optimized Sieve of Eratosthenes
+  public void generate(final BigInteger limit) {
     assert limit.compareTo(ZERO) ==  1 : "Limit must be positive!";
     int noPrimes = primes.size();
     BigInteger maxPrime = noPrimes > 0 ? primes.get(noPrimes - 1) : ZERO;
