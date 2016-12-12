@@ -16,10 +16,9 @@ import static net.euler.utils.MathUtils.*;
 public class Primes implements Iterable<Long> {
   private static Primes instance = null;
   private List<Long> primes;
-  private static final long LIMIT = 341550071728321L;
 
   private Primes() {
-    primes = Lists.newArrayList(2L, 3L, 5L, 7L, 11L, 13L, 17L, 19L, 23L); // required for isPrime
+    primes = Lists.newArrayList(2L, 3L, 5L, 7L, 11L, 13L, 17L, 19L, 23L, 29L, 31L, 37L, 41L); // required for isPrime
   }
 
   public static Primes getInstance() {
@@ -105,14 +104,13 @@ public class Primes implements Iterable<Long> {
   }
 
   /**
-   * Test if a number is prime using the Miller-Rabin Primality Test, which is guaranteed to correctly distinguish
-   * composites and primes up to 341,550,071,728,321 using the first 9 prime numbers.
+   * Test if a number is prime using the Miller–Rabin Primality Test, which is guaranteed to correctly distinguish
+   * composites and primes up to 3,317,044,064,679,887,385,961,981 using the first 13 prime numbers.
    *
    * @param n Number to be tested.
    * @return True only if prime.
    */
-  public boolean isPrime(final long n) { // TODO:  add pseudoprime checks above LIMIT???
-    if (n > LIMIT) System.err.println("WARNING!  Primality check not guaranteed for number " + n);
+  public boolean isPrime(final long n) {
     if (n <= 3) return n > 1;
     if (n % 2 == 0) return false;
     if (n <= primes.get(primes.size() - 1)) return contains(n);

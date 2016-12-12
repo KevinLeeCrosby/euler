@@ -34,8 +34,6 @@ public class NewPrimes implements Iterable<Long> {
   private static ImmutableBiMap<Long, Long> MODULI;
   private static long BIT_LIMIT, SIEVE_LIMIT;
 
-  private static final long PRIMALITY_LIMIT = 341550071728321L;
-
   private NewPrimes(final long sieveLimit) {
     initialize();
     generate(sieveLimit);
@@ -90,7 +88,7 @@ public class NewPrimes implements Iterable<Long> {
    * See:  http://www.qsl.net/w2gl/blackkey.html
    */
   private void generate(final long sieveLimit) {
-    long oddLimit = max(sieveLimit + 1, 31) | 1; // odd number
+    long oddLimit = max(sieveLimit + 1, 41) | 1; // odd number
     while(!MODULI.containsValue(oddLimit % BASE)) {
       oddLimit -= 2;
     }
@@ -153,16 +151,13 @@ public class NewPrimes implements Iterable<Long> {
   }
 
   /**
-   * Test if a number is prime using the Miller-Rabin Primality Test, which is guaranteed to correctly distinguish
-   * composites and primes up to 341,550,071,728,321 using the first 9 prime numbers.
+   * Test if a number is prime using the Miller–Rabin Primality Test, which is guaranteed to correctly distinguish
+   * composites and primes up to 3,317,044,064,679,887,385,961,981 using the first 13 prime numbers.
    *
    * @param n Number to be tested.
    * @return True only if prime.
    */
-  public boolean isPrime(final long n) { // TODO:  add pseudoprime checks above LIMIT???
-    if(n > PRIMALITY_LIMIT) {
-      System.err.println("WARNING!  Primality check not guaranteed for number " + n);
-    }
+  public boolean isPrime(final long n) {
     if(BASE_PRIMES.contains(n)) {
       return true;
     }
@@ -181,7 +176,7 @@ public class NewPrimes implements Iterable<Long> {
       d >>= 1;
       s++;
     }
-    for(final long a : Iterables.limit(this, 9)) {
+    for(final long a : Iterables.limit(this, 13)) {
       if(modPow(a, d, n) != 1) {
         boolean composite = true;
         for(long r = 0, p = 1; r < s; r++, p <<= 1) { // p = 2^r

@@ -23,16 +23,12 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
   private List<BigInteger> primes;
   private static final BigInteger TWO = BigInteger.valueOf(2L);
   private static final BigInteger THREE = BigInteger.valueOf(3L);
-  private static final BigInteger LIMIT = BigInteger.valueOf(341550071728321L);
+  private static final BigInteger LIMIT = new BigInteger("3317044064679887385961981");
 
   private BigIntegerPrimes() {
-    primes = Lists.newArrayList(Lists.transform(Lists.newArrayList(2L, 3L, 5L, 7L, 11L, 13L, 17L, 19L, 23L), // required for isPrime
-            new Function<Long, BigInteger>() {
-              @Override
-              public BigInteger apply(Long prime) {
-                return BigInteger.valueOf(prime);
-              }
-            })
+    primes = Lists.newArrayList(
+        Lists.transform(Lists.newArrayList(2L, 3L, 5L, 7L, 11L, 13L, 17L, 19L, 23L, 29L, 31L, 37L, 41L), // required for isPrime
+            BigInteger::valueOf)
     );
   }
 
@@ -71,7 +67,7 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
     primes = Lists.newArrayList(TWO); // start over, for now
     BigInteger sieve = ZERO; // fill with false (inverted logic), for n >= 3;
     int bit = -1;
-    for (BigInteger odd = THREE, mask = ONE; odd.compareTo(limit) < 1; odd = odd.add(TWO), mask.shiftLeft(1)) {
+    for (BigInteger odd = THREE; odd.compareTo(limit) < 1; odd = odd.add(TWO)) {
       if (!sieve.testBit(++bit)) { // i.e. if is prime
         primes.add(odd);
         int setBit = bit;
@@ -122,7 +118,7 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
 
   /**
    * Test if a number is prime using the Miller–Rabin Primality Test, which is guaranteed to correctly distinguish
-   * composites and primes up to 341,550,071,728,321 using the first 9 prime numbers.
+   * composites and primes up to 3,317,044,064,679,887,385,961,981 using the first 13 prime numbers.
    *
    * @param n Number to be tested.
    * @return True only if prime.
@@ -130,11 +126,11 @@ public class BigIntegerPrimes implements Iterable<BigInteger> {
   public boolean isPrime(final BigInteger n) { // TODO:  add pseudoprime checks above LIMIT???
     if (n.compareTo(LIMIT) == 1) System.err.println("WARNING!  Primality check not guaranteed for number " + n);
     if (n.compareTo(THREE) != 1) return n.compareTo(ONE) == 1;
-    if (n.mod(TWO) == ZERO) return false;
+    if (n.mod(TWO).equals(ZERO)) return false;
     if (n.compareTo(primes.get(primes.size() - 1)) != 1) return contains(n); // gt == 1, le != 1
     BigInteger d = n.subtract(ONE);
     int s = 0;
-    while (d.mod(TWO) == ZERO) {
+    while (d.mod(TWO).equals(ZERO)) {
       d = d.shiftRight(1);
       s++;
     }
