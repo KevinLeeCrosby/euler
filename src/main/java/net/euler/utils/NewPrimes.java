@@ -40,9 +40,9 @@ public class NewPrimes implements Iterable<Long> {
   }
 
   public static NewPrimes getInstance(final long sieveLimit) {
-    if(instance == null) {
-      synchronized(NewPrimes.class) {
-        if(instance == null) {
+    if (instance == null) {
+      synchronized (NewPrimes.class) {
+        if (instance == null) {
           instance = new NewPrimes(sieveLimit);
         }
       }
@@ -62,18 +62,18 @@ public class NewPrimes implements Iterable<Long> {
     final long bitLimit = (BASE - 1) >> 1;
     long lastBasePrime = 2;
     LongBitSet modSieve = new LongBitSet(); // fill with false (inverted logic), for n >= 3;
-    for(long primeBit = modSieve.nextClearBit(0), prime = 3, primorial = 6; primorial <= BASE;
-        primeBit = modSieve.nextClearBit(primeBit + 1), prime = (primeBit << 1) + 3, primorial *= prime) {
+    for (long primeBit = modSieve.nextClearBit(0), prime = 3, primorial = 6; primorial <= BASE;
+         primeBit = modSieve.nextClearBit(primeBit + 1), prime = (primeBit << 1) + 3, primorial *= prime) {
       basePrimes.add(prime);
       lastBasePrime = prime;
-      for(long compositeBit = primeBit + prime; compositeBit <= bitLimit; compositeBit += prime) {
+      for (long compositeBit = primeBit + prime; compositeBit <= bitLimit; compositeBit += prime) {
         modSieve.set(compositeBit); // set to composite
       }
     }
 
     moduli.put(0L, 1L); // NOTE: moduli are not necessarily prime in all bases
-    for(long i = 1, modBit = modSieve.nextClearBit(lastBasePrime >> 1), modulus = (modBit << 1) + 3; modBit < bitLimit;
-        ++i, modBit = modSieve.nextClearBit(modBit + 1), modulus = (modBit << 1) + 3) {
+    for (long i = 1, modBit = modSieve.nextClearBit(lastBasePrime >> 1), modulus = (modBit << 1) + 3; modBit < bitLimit;
+         ++i, modBit = modSieve.nextClearBit(modBit + 1), modulus = (modBit << 1) + 3) {
       moduli.put(i, modulus);
     }
 
@@ -89,24 +89,24 @@ public class NewPrimes implements Iterable<Long> {
    */
   private void generate(final long sieveLimit) {
     long oddLimit = max(sieveLimit + 1, 41) | 1; // odd number
-    while(!MODULI.containsValue(oddLimit % BASE)) {
+    while (!MODULI.containsValue(oddLimit % BASE)) {
       oddLimit -= 2;
     }
     SIEVE_LIMIT = oddLimit;
     BIT_LIMIT = pack(SIEVE_LIMIT);
-    if(BIT_LIMIT < 0) {
+    if (BIT_LIMIT < 0) {
       throw new NumberFormatException("Sieve limit of " + SIEVE_LIMIT + " is too large!");
     }
 
     sieve = new LongBitSet(); // all bits are initially false, let false = prime, true = composite
     sieve.set(0); // 1 is not a prime
-    for(long prime = unpack(1), primeBit = sieve.nextClearBit(1); prime <= SIEVE_LIMIT / prime;
-        primeBit = sieve.nextClearBit(primeBit + 1), prime = unpack(primeBit)) {
+    for (long prime = unpack(1), primeBit = sieve.nextClearBit(1); prime <= SIEVE_LIMIT / prime;
+         primeBit = sieve.nextClearBit(primeBit + 1), prime = unpack(primeBit)) {
       long ratio = SIEVE_LIMIT / prime;
-      for(long i = 0, multiplierBit = primeBit, multiplier = unpack(multiplierBit), composite = prime * multiplier;
-          i < BITS && multiplier <= ratio && composite < SIEVE_LIMIT;
-          ++i, multiplier = unpack(++multiplierBit), composite = prime * multiplier) { // prevent overflow
-        for(long compositeBit = pack(composite); compositeBit < BIT_LIMIT; compositeBit += BITS * prime) {
+      for (long i = 0, multiplierBit = primeBit, multiplier = unpack(multiplierBit), composite = prime * multiplier;
+           i < BITS && multiplier <= ratio && composite < SIEVE_LIMIT;
+           ++i, multiplier = unpack(++multiplierBit), composite = prime * multiplier) { // prevent overflow
+        for (long compositeBit = pack(composite); compositeBit < BIT_LIMIT; compositeBit += BITS * prime) {
           sieve.set(compositeBit);
         }
       }
@@ -137,8 +137,8 @@ public class NewPrimes implements Iterable<Long> {
     assert index >= 0 : "Index must be non-negative!";
     assert index < SIEVE_LIMIT : "Index is too large for existing sieve.";
     long counter = 0;
-    for(final long prime : this) {
-      if(counter++ == index) {
+    for (final long prime : this) {
+      if (counter++ == index) {
         return prime;
       }
     }
@@ -158,34 +158,34 @@ public class NewPrimes implements Iterable<Long> {
    * @return True only if prime.
    */
   public boolean isPrime(final long n) {
-    if(BASE_PRIMES.contains(n)) {
+    if (BASE_PRIMES.contains(n)) {
       return true;
     }
-    if(n < 2 || !isCoprime(n, BASE)) {
+    if (n < 2 || !isCoprime(n, BASE)) {
       return false;
     }
-    if(n <= 23) {
+    if (n <= 23) {
       return true;
     }
-    if(n < SIEVE_LIMIT) {
+    if (n < SIEVE_LIMIT) {
       return !sieve.get(pack(n));
     }
     long d = n - 1;
     long s = 0;
-    while(d % 2 == 0) {
+    while (d % 2 == 0) {
       d >>= 1;
       s++;
     }
-    for(final long a : Iterables.limit(this, 13)) {
-      if(modPow(a, d, n) != 1) {
+    for (final long a : Iterables.limit(this, 13)) {
+      if (modPow(a, d, n) != 1) {
         boolean composite = true;
-        for(long r = 0, p = 1; r < s; r++, p <<= 1) { // p = 2^r
-          if(modPow(a, p * d, n) == n - 1) {
+        for (long r = 0, p = 1; r < s; r++, p <<= 1) { // p = 2^r
+          if (modPow(a, p * d, n) == n - 1) {
             composite = false;
             break; // inconclusive
           }
         }
-        if(composite) {
+        if (composite) {
           return false;
         }
       }
@@ -208,19 +208,19 @@ public class NewPrimes implements Iterable<Long> {
   public boolean isPerfectSquare(long x) {
     // This tests if the 6 least significant bits are right.
     // Moving the to be tested bit to the highest position saves us masking.
-    if(goodMask << x >= 0) {
+    if (goodMask << x >= 0) {
       return false;
     }
     final int numberOfTrailingZeros = Long.numberOfTrailingZeros(x);
     // Each square ends with an even number of zeros.
-    if((numberOfTrailingZeros & 1) != 0) {
+    if ((numberOfTrailingZeros & 1) != 0) {
       return false;
     }
     x >>= numberOfTrailingZeros;
     // Now x is either 0 or odd.
     // In binary each odd square ends with 001.
     // Postpone the sign test until now; handle zero in the branch.
-    if((x & 7) != 1 | x <= 0) {
+    if ((x & 7) != 1 | x <= 0) {
       return x == 0;
     }
     // Do it in the classical way.
@@ -242,7 +242,7 @@ public class NewPrimes implements Iterable<Long> {
     assert power > 0 : "Number must be positive!";
     List<Long> factors = factor(power);
     long degree = 0;
-    for(final long factor : Sets.newHashSet(factors)) {
+    for (final long factor : Sets.newHashSet(factors)) {
       int exponent = Collections.frequency(factors, factor);
       degree = gcd(degree, exponent);
     }
@@ -273,7 +273,7 @@ public class NewPrimes implements Iterable<Long> {
   // NOTE:  doesn't work well for large semiprimes, such as 341550071728321 = 10670053 * 32010157 !
   // https://comeoncodeon.wordpress.com/2010/09/18/pollard-rho-brent-integer-factorization
   private long rho(final long n) {
-    if((n & 1) == 0) {
+    if ((n & 1) == 0) {
       return 2;
     }
 
@@ -281,15 +281,15 @@ public class NewPrimes implements Iterable<Long> {
     long y = random.nextLong(1, n - 1), c = random.nextLong(1, n - 1), m = random.nextLong(1, n - 1);
     long g = 1, r = 1, q = 1;
     long x = y, ys = y;
-    while(g == 1) {
+    while (g == 1) {
       x = y;
-      for(long i = 0; i < r; ++i) {
+      for (long i = 0; i < r; ++i) {
         y = ((y * y) % n + c) % n;
       }
       long k = 0;
-      while(k < r && g == 1) {
+      while (k < r && g == 1) {
         ys = y;
-        for(long i = 0; i < min(m, r - k); ++i) {
+        for (long i = 0; i < min(m, r - k); ++i) {
           y = ((y * y) % n + c) % n;
           q = q * abs(x - y) % n;
         }
@@ -298,32 +298,32 @@ public class NewPrimes implements Iterable<Long> {
       }
       r *= 2;
     }
-    if(g == n) {
+    if (g == n) {
       do {
         ys = ((ys * ys) % n + c) % n;
         g = gcd(abs(x - ys), n);
-      } while(g == 1);
+      } while (g == 1);
     }
     return g;
   }
 
   private List<Long> trialDivision(long number) {
     List<Long> factors = Lists.newArrayList();
-    if(number < 2L) {
+    if (number < 2L) {
       return factors;
     }
 
     long root = sqrt(number);
-    for(final long prime : this) { // trial division
-      if(prime > root) {
+    for (final long prime : this) { // trial division
+      if (prime > root) {
         break;
       }
-      while(number % prime == 0) {
+      while (number % prime == 0) {
         number /= prime;
         factors.add(prime);
       }
     }
-    if(number > 1L) {
+    if (number > 1L) {
       factors.add(number);
     }
 
@@ -332,15 +332,15 @@ public class NewPrimes implements Iterable<Long> {
 
   public List<Long> divisors(final long number) {
     List<Long> factors = factor(number);
-    if(factors.isEmpty()) {
+    if (factors.isEmpty()) {
       return number == 1 ? Lists.newArrayList(1L) : Lists.<Long>newArrayList();
     }
 
     List<Long> divisors = Lists.newArrayList(1L);
-    for(final long factor : Sets.newHashSet(factors)) {
+    for (final long factor : Sets.newHashSet(factors)) {
       long product = 1;
       List<Long> results = Lists.newArrayList();
-      for(int exponent = 1; exponent <= Collections.frequency(factors, factor); ++exponent) {
+      for (int exponent = 1; exponent <= Collections.frequency(factors, factor); ++exponent) {
         product *= factor;
         final long finalProduct = product;
         results.addAll(Lists.transform(divisors, divisor -> finalProduct * divisor));
@@ -353,12 +353,12 @@ public class NewPrimes implements Iterable<Long> {
   }
 
   public long countDivisors(final long number) { // Highly composite number formula
-    if(number < 1L) {
+    if (number < 1L) {
       return 0L;
     }
     long count = 1;
     List<Long> factors = factor(number);
-    for(final long factor : Sets.newHashSet(factors)) {
+    for (final long factor : Sets.newHashSet(factors)) {
       int exponent = Collections.frequency(factors, factor);
       count *= exponent + 1;
     }
@@ -366,15 +366,36 @@ public class NewPrimes implements Iterable<Long> {
   }
 
   public long sumDivisors(final long number) {
-    if(number < 1L) {
+    if (number < 1L) {
       return 0L;
     }
     long sum = 1;
     List<Long> factors = factor(number);
-    for(final long factor : Sets.newHashSet(factors)) {
+    for (final long factor : Sets.newHashSet(factors)) {
       int exponent = Collections.frequency(factors, factor);
       long numerator = pow(factor, exponent + 1) - 1;
       long denominator = factor - 1;
+      sum *= numerator / denominator;
+    }
+    return sum;
+  }
+
+  public long sigma(final long number, final int power) {
+    if (power < 0) {
+      throw new IllegalArgumentException("Power cannot be negative!");
+    }
+    if (power == 0) {
+      return countDivisors(number);
+    }
+    if (number < 1L) {
+      return 0L;
+    }
+    long sum = 1;
+    List<Long> factors = factor(number);
+    for (final long factor : Sets.newHashSet(factors)) {
+      int exponent = Collections.frequency(factors, factor);
+      long numerator = pow(factor, (exponent + 1)*power) - 1;
+      long denominator = pow(factor, power) - 1;
       sum *= numerator / denominator;
     }
     return sum;
@@ -412,7 +433,7 @@ public class NewPrimes implements Iterable<Long> {
     assert number > 0 : "Number must be positive!";
     List<Long> factors = factor(number);
     long phi = number;
-    for(final long factor : Sets.newHashSet(factors)) {
+    for (final long factor : Sets.newHashSet(factors)) {
       phi = phi / factor * (factor - 1);
     }
     return phi;
@@ -438,7 +459,7 @@ public class NewPrimes implements Iterable<Long> {
 
     public Long next() {
       long prime;
-      if(baseCount < BASE_PRIMES.size()) {
+      if (baseCount < BASE_PRIMES.size()) {
         prime = BASE_PRIMES.get(baseCount++);
       } else {
         prime = unpack(bit);
@@ -455,21 +476,21 @@ public class NewPrimes implements Iterable<Long> {
   public static void main(String[] args) {
     {
       NewPrimes primes = NewPrimes.getInstance();
-      for(long number : Lists.newArrayList(105L, 10053L, 1005415L, 10054033243L)) {
+      for (long number : Lists.newArrayList(105L, 10053L, 1005415L, 10054033243L)) {
         System.out.println(number + " is " + (primes.isPrime(number) ? "prime!" : "composite!"));
       }
-      for(long number : Lists.newArrayList(997L, 40487L, 53471161L, 1645333507L, 188748146801L)) {
+      for (long number : Lists.newArrayList(997L, 40487L, 53471161L, 1645333507L, 188748146801L)) {
         System.out.println(number + " is " + (primes.isPrime(number) ? "prime!" : "composite!"));
       }
     }
 
-    for(int limit : Lists.newArrayList(10, 20, 30, 15)) {
+    for (int limit : Lists.newArrayList(10, 20, 30, 15)) {
       //    for(int limit : Lists.newArrayList(1000)) {
       NewPrimes primes = NewPrimes.getInstance();
       int i = 1;
-      for(long prime : primes) {
+      for (long prime : primes) {
         System.out.print(prime + " ");
-        if(i++ == limit) {
+        if (i++ == limit) {
           System.out.println();
           break;
         }
@@ -480,7 +501,7 @@ public class NewPrimes implements Iterable<Long> {
       NewPrimes primes = NewPrimes.getInstance();
 
       // test O(n) get method
-      for(int i = 24; i >= 0; --i) {
+      for (int i = 24; i >= 0; --i) {
         System.out.print(primes.get(i) + " ");
       }
       System.out.println();
