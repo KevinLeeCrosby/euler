@@ -49,8 +49,7 @@ public class P173 {
   }
 
   public static void main(String[] args) {
-//    final int tiles = args.length > 0 ? Integer.parseInt(args[0]) : 100; // 41
-    final int tiles = args.length > 0 ? Integer.parseInt(args[0]) : 1_000_000; //
+    final int tiles = args.length > 0 ? Integer.parseInt(args[0]) : 1_000_000; // 1572729
 
     P173 problem = new P173();
     int laminae = problem.solve(tiles);
