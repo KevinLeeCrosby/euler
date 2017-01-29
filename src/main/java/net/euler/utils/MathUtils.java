@@ -6,7 +6,9 @@ import java.math.BigInteger;
 import java.util.List;
 
 import static java.lang.Math.abs;
+import static java.lang.Math.floorMod;
 import static java.math.BigInteger.*;
+import static net.euler.utils.NewPrimes.isCoprime;
 
 /**
  * Useful math utilities.
@@ -132,6 +134,8 @@ public class MathUtils {
    */
   public static long pow(long base, long exponent) {
     if (exponent < 0) return 0;
+    if (exponent == 0 || base == 1) return 1;
+    if (base == 0) return 0;
     if (base == 2) return pow2(exponent);
     long product = 1;
     while (exponent > 0) {
@@ -152,24 +156,58 @@ public class MathUtils {
    * @param modulus  Modulus to apply to power.
    * @return Base raised to the exponent power.
    */
-  public static long modPow(long base, long exponent, long modulus) {
+  public static long modPow(long base, long exponent, final long modulus) {
+    if (exponent == 0 || base == 1) return 1;
+    if (base == 0) return 0;
+
     // use BigInteger method if in danger of overflow
     if (modulus - 1 > LONG_ROOT) {
       BigInteger product = BigInteger.valueOf(base).modPow(BigInteger.valueOf(exponent), BigInteger.valueOf(modulus));
       return product.longValue();
     }
 
+    boolean invert = exponent < 0;
+    if (invert) exponent = -exponent; // TODO check coprimality of base and modulus
+
     // long method
     long product = 1;
-    base = base % modulus;
+    base = floorMod(base, modulus); // force modulus for negative bases
     while (exponent > 0) {
       if ((exponent & 1) != 0) { // i.e. if odd
-        product = (product * base) % modulus;
+        product = floorMod(product * base, modulus);
       }
       exponent >>>= 1;
-      base = (base * base) % modulus;
+      base = floorMod(base * base, modulus);
     }
-    return product;
+    return invert ? invMod(product, modulus) : product;
+  }
+
+  /**
+   * Inverse modulus.
+   *
+   * @param a Base to take power of.
+   * @param b Modulus to apply to power.
+   * @return
+   * @throws ArithmeticException {@code  m} &le; 0, if a and b are not coprime.
+   */
+  public static long invMod(long a, long b) {
+    if (!isCoprime(a, b)) {
+      throw new ArithmeticException(String.format("%d and %d are not coprime!  Have common factor %d!", a, b, gcd(a, b)));
+    }
+    long b0 = b, t, q;
+    long x0 = 0, x1 = 1;
+    if (b == 1) return 1;
+    while (a > 1) {
+      q = a / b;
+      t = b;
+      b = a % b;
+      a = t;
+      t = x0;
+      x0 = x1 - q * x0;
+      x1 = t;
+    }
+    if (x1 < 0) x1 += b0;
+    return x1;
   }
 
   /**
