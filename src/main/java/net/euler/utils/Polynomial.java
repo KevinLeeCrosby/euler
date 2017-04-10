@@ -59,7 +59,7 @@ public class Polynomial {
   }
 
   public Rational get(final long index) {
-    return coefficients.containsKey(index) ? coefficients.get(index) : Rational.ZERO;
+    return coefficients.getOrDefault(index, Rational.ZERO);
   }
 
   public void set(final long index, final Rational coefficient) {
