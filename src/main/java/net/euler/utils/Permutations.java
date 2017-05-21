@@ -36,7 +36,7 @@ public class Permutations<T> implements Iterable<List<T>> {
   private int[] encode(final long decimal) {
     int[] lehmer = new int[n];
     long number = decimal;
-    for(int v = 2; v <= n; v++) {
+    for(int v = 2; v <= n; ++v) {
       lehmer[n - v] = (int) (number % v); // generate Lehmer code
       number /= v;
     }
