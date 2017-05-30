@@ -85,7 +85,7 @@ public class MathUtils {
    * @return Discrete logarithm base n.
    */
   public static long logBase(final long antilogarithm, final long base) {
-    if (base == 2) return log2(antilogarithm);
+    if (base == 2) { return log2(antilogarithm); }
     long mantissa = 0;
     long n = antilogarithm / base;
     while (n > 0) {
@@ -103,8 +103,8 @@ public class MathUtils {
    * @return Discrete logarithm base n.
    */
   public static BigInteger logBase(final BigInteger antilogarithm, final BigInteger base) {
-    if (base.compareTo(ZERO) != 1) return null;
-    if (base.equals(TWO)) return log2(antilogarithm);
+    if (base.compareTo(ZERO) != 1) { return null; }
+    if (base.equals(TWO)) { return log2(antilogarithm); }
     BigInteger mantissa = ZERO;
     BigInteger n = antilogarithm.divide(base);
     while (n.compareTo(ZERO) == 1) { // i.e. n > 0
@@ -121,7 +121,7 @@ public class MathUtils {
    * @return 2 raised to the exponent power.
    */
   public static long pow2(long exponent) {
-    if (exponent < 0) return 0;
+    if (exponent < 0) { return 0; }
     return 1L << exponent;
   }
 
@@ -133,10 +133,10 @@ public class MathUtils {
    * @return Base raised to the exponent power.
    */
   public static long pow(long base, long exponent) {
-    if (exponent < 0) return 0;
-    if (exponent == 0 || base == 1) return 1;
-    if (base == 0) return 0;
-    if (base == 2) return pow2(exponent);
+    if (exponent < 0) { return 0; }
+    if (exponent == 0 || base == 1) { return 1; }
+    if (base == 0) { return 0; }
+    if (base == 2) { return pow2(exponent); }
     long product = 1;
     while (exponent > 0) {
       if ((exponent & 1) != 0) { // i.e. if odd
@@ -157,8 +157,8 @@ public class MathUtils {
    * @return Base raised to the exponent power.
    */
   public static long modPow(long base, long exponent, final long modulus) {
-    if (exponent == 0 || base == 1) return 1;
-    if (base == 0) return 0;
+    if (exponent == 0 || base == 1) { return 1; }
+    if (base == 0) { return 0; }
 
     // use BigInteger method if in danger of overflow
     if (modulus - 1 > LONG_ROOT) {
@@ -167,7 +167,9 @@ public class MathUtils {
     }
 
     boolean invert = exponent < 0;
-    if (invert) exponent = -exponent; // TODO check coprimality of base and modulus
+    if (invert) {
+      exponent = -exponent; // TODO check coprimality of base and modulus
+    }
 
     // long method
     long product = 1;
@@ -196,7 +198,7 @@ public class MathUtils {
     }
     long b0 = b, t, q;
     long x0 = 0, x1 = 1;
-    if (b == 1) return 1;
+    if (b == 1) { return 1; }
     while (a > 1) {
       q = a / b;
       t = b;
@@ -206,7 +208,7 @@ public class MathUtils {
       x0 = x1 - q * x0;
       x1 = t;
     }
-    if (x1 < 0) x1 += b0;
+    if (x1 < 0) { x1 += b0; }
     return x1;
   }
 
@@ -217,6 +219,7 @@ public class MathUtils {
    * @return Long/Integer square root of number.
    */
   public static long sqrt(final long radicand) {
+    if (radicand == 0) { return 0; }
     long x = pow2((log2(radicand) >>> 1) + 1);
     long y = (x + radicand / x) >>> 1;
     while (y < x) {
@@ -233,6 +236,7 @@ public class MathUtils {
    * @return Long/Integer square root of number.
    */
   public static BigInteger sqrt(final BigInteger radicand) {
+    if (radicand.compareTo(ZERO) == 0) { return ZERO; }
     BigInteger x = TWO.pow(log2(radicand).shiftRight(1).add(ONE).intValue());
     BigInteger y = (x.add(radicand.divide(x))).shiftRight(1);
     while (y.compareTo(x) == -1) { // i.e. y < x
@@ -278,7 +282,7 @@ public class MathUtils {
    * @return nCk
    */
   public static long binomial(final int n, final int k) {
-    if (n < k || n < 0 || k < 0) return 0;
+    if (n < k || n < 0 || k < 0) { return 0; }
     if (k == 0 || k == n) {
       return 1;
     } else {
@@ -295,7 +299,7 @@ public class MathUtils {
    * @return nCk
    */
   public static BigInteger binomial(final long n, final long k) {
-    if (n < k || n < 0 || k < 0) return ZERO;
+    if (n < k || n < 0 || k < 0) { return ZERO; }
     if (k == 0 || k == n) {
       return ONE;
     } else {
