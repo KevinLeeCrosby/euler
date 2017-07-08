@@ -72,7 +72,7 @@ public class P531 {
     }
     long s = orst[1], t = orst[2]; // Bézout coefficients
 
-    // https://math.stackexchange.com/questions/1644677/what-to-do-if-the-modulus-is-not-coprime-in-the-chinese-remainder-theoremg
+    // https://math.stackexchange.com/questions/1644677/what-to-do-if-the-modulus-is-not-coprime-in-the-chinese-remainder-theorem
     gcd = n * s + m * t;
     long lcm = n * m / gcd;
     long x = a + (b - a) * n * s / gcd;
