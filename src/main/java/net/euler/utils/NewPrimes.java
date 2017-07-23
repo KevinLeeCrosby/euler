@@ -340,7 +340,8 @@ public class NewPrimes implements Iterable<Long> {
     for (final long factor : Sets.newHashSet(factors)) {
       long product = 1;
       List<Long> results = Lists.newArrayList();
-      for (int exponent = 1; exponent <= Collections.frequency(factors, factor); ++exponent) {
+      int frequency = Collections.frequency(factors, factor);
+      for (int exponent = 1; exponent <= frequency; ++exponent) {
         product *= factor;
         final long finalProduct = product;
         results.addAll(Lists.transform(divisors, divisor -> finalProduct * divisor));
