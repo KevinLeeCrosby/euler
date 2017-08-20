@@ -212,6 +212,52 @@ public class MathUtils {
     return x1;
   }
 
+  private static final long goodMask = 0xC840C04048404040L; // computed below
+  //{ for (int i=0; i<64; ++i) goodMask |= Long.MIN_VALUE >>> (i*i); }
+
+  //  http://stackoverflow.com/questions/295579/fastest-way-to-determine-if-an-integers-square-root-is-an-integer
+
+  /**
+   * Check if number is a perfect square.
+   *
+   * @param x Number to test.
+   * @return True if a perfect square, and false otherwise.
+   */
+  public static boolean isSquare(long x) {
+    // This tests if the 6 least significant bits are right.
+    // Moving the to be tested bit to the highest position saves us masking.
+    if (goodMask << x >= 0) {
+      return false;
+    }
+    final int numberOfTrailingZeros = Long.numberOfTrailingZeros(x);
+    // Each square ends with an even number of zeros.
+    if ((numberOfTrailingZeros & 1) != 0) {
+      return false;
+    }
+    x >>= numberOfTrailingZeros;
+    // Now x is either 0 or odd.
+    // In binary each odd square ends with 001.
+    // Postpone the sign test until now; handle zero in the branch.
+    if ((x & 7) != 1 | x <= 0) {
+      return x == 0;
+    }
+    // Do it in the classical way.
+    // The correctness is not trivial as the conversion from long to double is lossy!
+    final long tst = (long)Math.sqrt(x);
+    //final long tst = sqrt(x); // replaced floating sqrt with integer sqrt.
+    return tst * tst == x;
+  }
+
+  /**
+   * Check if number is triangular.
+   *
+   * @param x Number to test.
+   * @return True if triangular, and false otherwise.
+   */
+  public static boolean isTriangular(long x) {
+    return isSquare(8 * x + 1);
+  }
+
   /**
    * Long/Integer square root.
    *
