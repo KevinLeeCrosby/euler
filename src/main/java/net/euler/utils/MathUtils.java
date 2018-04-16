@@ -196,20 +196,17 @@ public class MathUtils {
     if (!isCoprime(a, b)) {
       throw new ArithmeticException(String.format("%d and %d are not coprime!  Have common factor %d!", a, b, gcd(a, b)));
     }
-    long b0 = b, t, q;
-    long x0 = 0, x1 = 1;
-    if (b == 1) { return 1; }
-    while (a > 1) {
-      q = a / b;
-      t = b;
-      b = a % b;
-      a = t;
-      t = x0;
-      x0 = x1 - q * x0;
-      x1 = t;
+    long[] v = new long[]{b, a, 0, 1}; // r, newr, t, newt
+    long quotient;
+
+    while (v[1] != 0) {
+      quotient = v[0] / v[1];
+      System.arraycopy(new int[]{v[1], v[0] - quotient * v[1], v[3], v[2] - quotient * v[3]}, 0, v, 0, v.length);
     }
-    if (x1 < 0) { x1 += b0; }
-    return x1;
+    if (v[0] > 1) { // shouldn't happen
+      throw new ArithmeticException(String.format("%d and %d are not coprime!  Have common factor %d!", a, b, gcd(a, b)));
+    }
+    return floorMod(v[2], b);
   }
 
   private static final long goodMask = 0xC840C04048404040L; // computed below
