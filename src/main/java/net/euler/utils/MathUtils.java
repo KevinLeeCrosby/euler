@@ -201,7 +201,7 @@ public class MathUtils {
 
     while (v[1] != 0) {
       quotient = v[0] / v[1];
-      System.arraycopy(new int[]{v[1], v[0] - quotient * v[1], v[3], v[2] - quotient * v[3]}, 0, v, 0, v.length);
+      System.arraycopy(new long[]{v[1], v[0] - quotient * v[1], v[3], v[2] - quotient * v[3]}, 0, v, 0, v.length);
     }
     if (v[0] > 1) { // shouldn't happen
       throw new ArithmeticException(String.format("%d and %d are not coprime!  Have common factor %d!", a, b, gcd(a, b)));
