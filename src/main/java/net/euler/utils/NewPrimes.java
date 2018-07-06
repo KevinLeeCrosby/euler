@@ -284,14 +284,21 @@ public class NewPrimes implements Iterable<Long> {
       return factors;
     }
 
-    long root = sqrt(number);
+    long root;
+    root = sqrt(number);
+    boolean updated;
     for (final long prime : this) { // trial division
+      updated = false;
       if (prime > root) {
         break;
       }
       while (number % prime == 0) {
         number /= prime;
         factors.add(prime);
+        updated = true;
+      }
+      if (updated) {
+        root = sqrt(number);
       }
     }
     if (number > 1L) {
@@ -315,7 +322,9 @@ public class NewPrimes implements Iterable<Long> {
       for (int exponent = 1; exponent <= frequency; ++exponent) {
         product *= factor;
         final long finalProduct = product;
-        results.addAll(Lists.transform(divisors, divisor -> finalProduct * divisor));
+        divisors.stream()
+            .map(divisor -> finalProduct * divisor)
+            .forEach(results::add);
       }
       divisors.addAll(results);
     }

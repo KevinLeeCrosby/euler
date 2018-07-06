@@ -172,11 +172,17 @@ public class Primes implements Iterable<Long> {
     int i = 0;
     long prime;
     long root = sqrt(number);
+    boolean updated;
     do {
+      updated = false;
       prime = get(i++);
       while (number % prime == 0) {
         number /= prime;
         factors.add(prime);
+        updated = true;
+      }
+      if (updated) {
+        root = sqrt(number);
       }
     } while (prime <= root);
     if (number > 1L) {
