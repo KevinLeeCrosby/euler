@@ -187,9 +187,9 @@ public class MathUtils {
   /**
    * Inverse modulus.
    *
-   * @param a Base to take power of.
-   * @param b Modulus to apply to power.
-   * @return
+   * @param a Product.
+   * @param b Modulus.
+   * @return Divisor.
    * @throws ArithmeticException {@code  m} &le; 0, if a and b are not coprime.
    */
   public static long invMod(long a, long b) {
